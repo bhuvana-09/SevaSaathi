@@ -288,7 +288,13 @@ export default function UserForm() {
           </div>
 
           <button type="submit" className="submit-btn" disabled={isLoading}>
-            {isLoading ? 'Checking Eligibility...' : t.submitBtn}
+            {isLoading ? (
+              <span className="btn-loading-state">
+                <span className="spinner"></span> Checking Eligibility...
+              </span>
+            ) : (
+              t.submitBtn
+            )}
           </button>
         </form>
 

@@ -139,8 +139,20 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
       </div>
 
       {eligible.length === 0 && nearMisses.length === 0 && (
-        <div className="no-matches-notice">
-          No eligible or near-miss schemes found for the provided profile.
+        <div className="empty-state-card">
+          <div className="empty-state-icon">🔍</div>
+          <h3>No matching schemes found</h3>
+          <p>
+            We couldn't find any exact matches or near-miss schemes for your current profile parameters.
+          </p>
+          <div className="empty-state-tips">
+            <strong>Tips to discover schemes:</strong>
+            <ul>
+              <li>Check if your state selection and social category are accurate.</li>
+              <li>Verify annual income threshold details.</li>
+              <li>Try adjusting your profile inputs or search parameters.</li>
+            </ul>
+          </div>
         </div>
       )}
 
