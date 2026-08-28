@@ -9,6 +9,11 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Health-check endpoint
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'SevaSaathi Backend API is running' });
+});
+
 // Load schemes
 const schemesPath = path.join(__dirname, 'schemes.json');
 let schemes = [];
@@ -259,6 +264,19 @@ app.post('/match', (req, res) => {
     nearMisses,
     ineligible: ineligibleSchemes,
     allResults
+  });
+});
+
+// 404 Handler for undefined routes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint not found' });
+});
+
+// Global Error Handler Middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled Server Error:', err.stack || err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error'
   });
 });
 
