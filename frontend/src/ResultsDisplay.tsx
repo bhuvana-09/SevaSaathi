@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChecklistResponse, getChecklist } from './api';
+import { Language, TRANSLATIONS } from './constants';
+import { speakText, stopSpeech } from './speechSynthesis';
 
 export interface ResultsDisplayProps {
+  lang: Language;
   eligible: Array<{
     id: string;
     name: string;
@@ -17,10 +20,72 @@ export interface ResultsDisplayProps {
   }>;
 }
 
-export default function ResultsDisplay({ eligible, nearMisses }: ResultsDisplayProps) {
+export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDisplayProps) {
   const [selectedChecklist, setSelectedChecklist] = useState<ChecklistResponse | null>(null);
   const [loadingSchemeId, setLoadingSchemeId] = useState<string | null>(null);
   const [checklistError, setChecklistError] = useState<string | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+
+  const t = TRANSLATIONS[lang];
+
+  // Prepare full speech text for eligible schemes and near misses
+  const generateResultsSpeechText = () => {
+    let text = '';
+    if (eligible.length > 0) {
+      const eligibleNames = eligible.map((s) => s.name).join(', ');
+      if (lang === 'hi') {
+        text += `आप ${eligible.length} योजनाओं के लिए पात्र हैं: ${eligibleNames}। `;
+      } else if (lang === 'te') {
+        text += `మీరు ${eligible.length} పథకాలకు అర్హులు: ${eligibleNames}. `;
+      } else {
+        text += `You are eligible for ${eligible.length} scheme${eligible.length > 1 ? 's' : ''}: ${eligibleNames}. `;
+      }
+    } else {
+      if (lang === 'hi') {
+        text += `कोई पात्र योजना नहीं मिली। `;
+      } else if (lang === 'te') {
+        text += `అర్హత ఉన్న పథకాలు ఏవీ లభించలేదు. `;
+      } else {
+        text += `No eligible schemes found. `;
+      }
+    }
+
+    if (nearMisses.length > 0) {
+      if (lang === 'hi') {
+        text += `${nearMisses.length} निकट-चूक योजनाएं भी हैं। `;
+      } else if (lang === 'te') {
+        text += `${nearMisses.length} దాదాపు అర్హత ఉన్న పథకాలు ఉన్నాయి. `;
+      } else {
+        text += `There are also ${nearMisses.length} near-miss scheme${nearMisses.length > 1 ? 's' : ''}. `;
+      }
+    }
+
+    return text;
+  };
+
+  // Trigger speech synthesis on initial render of results
+  useEffect(() => {
+    const textToRead = generateResultsSpeechText();
+    if (textToRead) {
+      setIsSpeaking(true);
+      speakText(textToRead, lang, () => setIsSpeaking(false));
+    }
+
+    return () => {
+      stopSpeech();
+    };
+  }, [eligible, nearMisses, lang]);
+
+  const handleToggleSpeakResults = () => {
+    if (isSpeaking) {
+      stopSpeech();
+      setIsSpeaking(false);
+    } else {
+      const textToRead = generateResultsSpeechText();
+      setIsSpeaking(true);
+      speakText(textToRead, lang, () => setIsSpeaking(false));
+    }
+  };
 
   const handleFetchChecklist = async (schemeId: string) => {
     try {
@@ -28,6 +93,20 @@ export default function ResultsDisplay({ eligible, nearMisses }: ResultsDisplayP
       setChecklistError(null);
       const data = await getChecklist(schemeId);
       setSelectedChecklist(data);
+
+      // Read aloud the checklist for this scheme
+      const docListStr = data.checklist.map((doc) => doc.document).join(', ');
+      let checklistText = '';
+      if (lang === 'hi') {
+        checklistText = `${data.schemeName} के लिए आवश्यक दस्तावेज हैं: ${docListStr}।`;
+      } else if (lang === 'te') {
+        checklistText = `${data.schemeName} కోసం అవసరమైన పత్రాలు: ${docListStr}.`;
+      } else {
+        checklistText = `Required documents for ${data.schemeName} are: ${docListStr}.`;
+      }
+
+      setIsSpeaking(true);
+      speakText(checklistText, lang, () => setIsSpeaking(false));
     } catch (err: unknown) {
       if (err instanceof Error) {
         setChecklistError(err.message);
@@ -40,13 +119,24 @@ export default function ResultsDisplay({ eligible, nearMisses }: ResultsDisplayP
   };
 
   const closeModal = () => {
+    stopSpeech();
+    setIsSpeaking(false);
     setSelectedChecklist(null);
     setChecklistError(null);
   };
 
   return (
     <div className="results-container">
-      <h2 className="results-title">Scheme Matching Results</h2>
+      <div className="results-header-bar">
+        <h2 className="results-title">Scheme Matching Results</h2>
+        <button
+          type="button"
+          onClick={handleToggleSpeakResults}
+          className={`speak-btn ${isSpeaking ? 'speaking' : ''}`}
+        >
+          {isSpeaking ? t.stopReading : t.readAloud}
+        </button>
+      </div>
 
       {eligible.length === 0 && nearMisses.length === 0 && (
         <div className="no-matches-notice">

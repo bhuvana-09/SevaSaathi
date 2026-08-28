@@ -20,6 +20,9 @@ export interface Translations {
   submitBtn: string;
   submittedNotice: string;
   voiceSuccess: string;
+  readAloud: string;
+  stopReading: string;
+  checklistFor: string;
 }
 
 export const TRANSLATIONS: Record<Language, Translations> = {
@@ -42,7 +45,10 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     selectEducation: "Select Education Level",
     submitBtn: "Submit",
     submittedNotice: "✔️ Form submitted! Check browser console for logged data.",
-    voiceSuccess: "Voice input processed!"
+    voiceSuccess: "Voice input processed!",
+    readAloud: "🔊 Read Aloud Results",
+    stopReading: "⏹️ Stop Voice",
+    checklistFor: "Checklist for"
   },
   hi: {
     title: "उपयोगकर्ता जानकारी",
@@ -63,7 +69,10 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     selectEducation: "शिक्षा का स्तर चुनें",
     submitBtn: "सबमिट करें",
     submittedNotice: "✔️ फ़ॉर्म जमा कर दिया गया! दर्ज डेटा देखने के लिए ब्राउज़र कंसोल जांचें।",
-    voiceSuccess: "वॉयस इनपुट संसाधित हो गया!"
+    voiceSuccess: "वॉयस इनपुट संसाधित हो गया!",
+    readAloud: "🔊 परिणाम सुनकर जानें",
+    stopReading: "⏹️ आवाज़ बंद करें",
+    checklistFor: "चेकलिस्ट"
   },
   te: {
     title: "వినియోగదారు సమాచారం",
@@ -84,7 +93,10 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     selectEducation: "విద్యా అర్హతను ఎంచుకోండి",
     submitBtn: "సమర్పించండి",
     submittedNotice: "✔️ ఫారమ్ సమర్పించబడింది! నమోదు చేసిన డేటా కోసం బ్రౌజర్ కన్సోల్‌ను చూడండి.",
-    voiceSuccess: "వాయిస్ ఇన్‌పుట్ ప్రాసెస్ చేయబడింది!"
+    voiceSuccess: "వాయిస్ ఇన్‌పుట్ ప్రాసెస్ చేయబడింది!",
+    readAloud: "🔊 ఫలితాలను బిగ్గరగా వినండి",
+    stopReading: "⏹️ వాయిస్ ఆపండి",
+    checklistFor: "చెక్‌లిస్ట్"
   }
 };
 

@@ -301,6 +301,7 @@ export default function UserForm() {
 
       {matchResults && (
         <ResultsDisplay
+          lang={lang}
           eligible={matchResults.eligible}
           nearMisses={matchResults.nearMisses}
         />
