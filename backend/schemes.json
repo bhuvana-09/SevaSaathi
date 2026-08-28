@@ -1,0 +1,116 @@
+[
+  {
+    "id": "pm-yasasvi",
+    "name": "PM Young Achievers Scholarship Award Scheme for Vibrant India (PM-YASASVI)",
+    "description": "Scholarship scheme by the Ministry of Social Justice and Empowerment for OBC, EBC, and DNT students studying in Class 9 to 12 and higher education.",
+    "eligibility": {
+      "maxAge": 25,
+      "states": ["All"],
+      "maxIncome": 250000,
+      "category": ["OBC", "EBC", "DNT"],
+      "education": ["High School", "Undergraduate", "Diploma"]
+    },
+    "documents": [
+      "Aadhaar Card",
+      "Income Certificate",
+      "Caste / Category Certificate",
+      "Mark sheet of previous qualifying exam",
+      "Bank Account Details"
+    ]
+  },
+  {
+    "id": "csss-college",
+    "name": "Central Sector Scheme of Scholarships for College and University Students",
+    "description": "Financial assistance to meritorious students from low-income families to meet a part of their day-to-day expenses while pursuing higher studies.",
+    "eligibility": {
+      "maxAge": 25,
+      "states": ["All"],
+      "maxIncome": 450000,
+      "category": ["General", "OBC", "SC", "ST", "EWS"],
+      "education": ["Undergraduate", "Postgraduate"]
+    },
+    "documents": [
+      "Class 12th Marksheet",
+      "Income Certificate",
+      "Aadhaar Card",
+      "College Admission Fee Receipt",
+      "Bank Passbook"
+    ]
+  },
+  {
+    "id": "post-matric-sc-st",
+    "name": "Post-Matric Scholarship for SC/ST Students",
+    "description": "Financial assistance to Scheduled Caste and Scheduled Tribe students studying at post-matriculation or post-secondary stage to enable them to complete their education.",
+    "eligibility": {
+      "maxAge": 30,
+      "states": ["All"],
+      "maxIncome": 250000,
+      "category": ["SC", "ST"],
+      "education": ["Undergraduate", "Postgraduate", "Diploma", "Doctorate"]
+    },
+    "documents": [
+      "SC/ST Caste Certificate",
+      "Income Certificate issued by competent authority",
+      "Aadhaar Card",
+      "Previous Exam Marksheet",
+      "Fee Receipt of Current Course"
+    ]
+  },
+  {
+    "id": "aicte-pragati",
+    "name": "AICTE Pragati Scholarship Scheme for Girl Students",
+    "description": "Scholarship provided by AICTE to empower girl students pursuing technical education in approved degree or diploma institutions.",
+    "eligibility": {
+      "maxAge": 30,
+      "states": ["All"],
+      "maxIncome": 800000,
+      "category": ["General", "OBC", "SC", "ST", "EWS"],
+      "education": ["Undergraduate", "Diploma"]
+    },
+    "documents": [
+      "Aadhaar Card",
+      "Class 10th and 12th Marksheets",
+      "Annual Family Income Certificate",
+      "Admission letter to AICTE approved technical institution",
+      "Bank Account details linked with Aadhaar"
+    ]
+  },
+  {
+    "id": "nmmss",
+    "name": "National Means-cum-Merit Scholarship Scheme (NMMSS)",
+    "description": "Awarded to meritorious students of economically weaker sections to arrest their drop out at class 8 and encourage them to continue study at secondary stage.",
+    "eligibility": {
+      "maxAge": 16,
+      "states": ["All"],
+      "maxIncome": 350000,
+      "category": ["General", "OBC", "SC", "ST", "EWS"],
+      "education": ["Middle School", "High School"]
+    },
+    "documents": [
+      "Class 7th Marksheet with minimum 55% marks",
+      "Income Certificate of parents",
+      "Caste Certificate (if applicable)",
+      "Aadhaar Card",
+      "School ID / Headmaster Verification Certificate"
+    ]
+  },
+  {
+    "id": "mahadbt-post-matric",
+    "name": "Rajarshi Chhatrapati Shahu Maharaj Merit Scholarship (Maharashtra)",
+    "description": "State scholarship by Maharashtra Government providing financial assistance to EWS and General category students pursuing higher professional education.",
+    "eligibility": {
+      "maxAge": 28,
+      "states": ["Maharashtra"],
+      "maxIncome": 800000,
+      "category": ["General", "EWS"],
+      "education": ["Undergraduate", "Postgraduate", "Diploma"]
+    },
+    "documents": [
+      "Domicile Certificate of Maharashtra",
+      "Income Certificate (Form 16 or Tahsildar Certificate)",
+      "CAP Allotment Letter for professional course",
+      "Class 10th and 12th Marksheets",
+      "Aadhaar Card linked with Bank Account"
+    ]
+  }
+]
