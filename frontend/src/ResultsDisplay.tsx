@@ -101,7 +101,7 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
     setVoiceNotice(fallbackNotice);
   };
 
-  // Trigger speech on initial load of results
+  // Trigger speech only when new form submission results arrive
   useEffect(() => {
     const speechContent = buildSpeechText();
     executeSpeech(speechContent);
@@ -109,7 +109,13 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
     return () => {
       stopSpeech();
     };
-  }, [eligible, nearMisses, lang]);
+  }, [eligible, nearMisses]);
+
+  // When language changes, stop active narration without auto-restarting speech
+  useEffect(() => {
+    stopSpeech();
+    setIsSpeaking(false);
+  }, [lang]);
 
   const handleStartSpeakResults = () => {
     const speechContent = buildSpeechText();

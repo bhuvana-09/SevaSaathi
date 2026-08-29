@@ -29,7 +29,7 @@ const STATE_MAP: Record<string, string[]> = {
   "Tripura": ["tripura", "त्रिपुरा", "త్రిపుర"],
   "Uttar Pradesh": ["uttar pradesh", "उत्तर प्रदेश", "ఉత్తర ప్రదేశ్", "up", "यूपी"],
   "Uttarakhand": ["uttarakhand", "उत्तराखंड", "ఉత్తరాఖండ్"],
-  "West Bengal": ["west bengal", "पश्चिम बंगाल", "పశ్చిమ బెంగాల్", "bengal", "बंगाल"],
+  "West Bengal": ["west bengal", "पश्चिम बंगाल", "पश्छिम बंगाल", "bengal", "बंगाल"],
   "Andaman and Nicobar Islands": ["andaman and nicobar", "अंडमान और निकोबार", "అండమాన్ మరియు నికోబార్"],
   "Chandigarh": ["chandigarh", "चंडीगढ़", "చండీగఢ్"],
   "Dadra and Nagar Haveli and Daman and Diu": ["daman and diu", "dadra and nagar haveli", "दमन और दीव", "దాద్రా నగర్ హవేలీ"],
@@ -50,9 +50,10 @@ const CATEGORY_MAP: Record<string, string[]> = {
   "DNT": ["dnt", "डीएनटी", "డీఎన్‌టీ", "denotified tribe", "विमुक्त जनजाति"]
 };
 
+// Female listed before Male to ensure female is evaluated first; word boundary regex used for ASCII
 const GENDER_MAP: Record<string, string[]> = {
-  "Male": ["male", "man", "boy", "पुरुष", "आदमी", "लड़का", "పురుషుడు", "మగ"],
   "Female": ["female", "woman", "girl", "महिला", "स्त्री", "लड़की", "స్త్రీ", "మహిళ", "ఆడ"],
+  "Male": ["male", "man", "boy", "पुरुष", "आदमी", "लड़का", "పురుషుడు", "మగ"],
   "Other": ["other", "transgender", "अन्य", "अन्य लिंग", "ఇతర", "ఇతర లింగం"]
 };
 
@@ -131,10 +132,15 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
     if (updates.category) break;
   }
 
-  // 5. Extract Gender (Multilingual)
+  // 5. Extract Gender (Multilingual with Word Boundaries)
   for (const [officialGender, variants] of Object.entries(GENDER_MAP)) {
     for (const variant of variants) {
-      if (lowerText.includes(variant)) {
+      const isAscii = /^[a-z]+$/i.test(variant);
+      const matched = isAscii
+        ? new RegExp(`\\b${variant}\\b`, 'i').test(lowerText)
+        : lowerText.includes(variant);
+
+      if (matched) {
         updates.gender = officialGender;
         break;
       }
