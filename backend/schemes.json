@@ -8,6 +8,7 @@
       "states": ["All"],
       "maxIncome": 250000,
       "category": ["OBC", "EBC", "DNT"],
+      "gender": ["All"],
       "education": ["High School", "Undergraduate", "Diploma"]
     },
     "documents": [
@@ -27,6 +28,7 @@
       "states": ["All"],
       "maxIncome": 450000,
       "category": ["General", "OBC", "SC", "ST", "EWS"],
+      "gender": ["All"],
       "education": ["Undergraduate", "Postgraduate"]
     },
     "documents": [
@@ -46,6 +48,7 @@
       "states": ["All"],
       "maxIncome": 250000,
       "category": ["SC", "ST"],
+      "gender": ["All"],
       "education": ["Undergraduate", "Postgraduate", "Diploma", "Doctorate"]
     },
     "documents": [
@@ -65,6 +68,7 @@
       "states": ["All"],
       "maxIncome": 800000,
       "category": ["General", "OBC", "SC", "ST", "EWS"],
+      "gender": ["Female"],
       "education": ["Undergraduate", "Diploma"]
     },
     "documents": [
@@ -84,6 +88,7 @@
       "states": ["All"],
       "maxIncome": 350000,
       "category": ["General", "OBC", "SC", "ST", "EWS"],
+      "gender": ["All"],
       "education": ["Middle School", "High School"]
     },
     "documents": [
@@ -103,6 +108,7 @@
       "states": ["Maharashtra"],
       "maxIncome": 800000,
       "category": ["General", "EWS"],
+      "gender": ["All"],
       "education": ["Undergraduate", "Postgraduate", "Diploma"]
     },
     "documents": [

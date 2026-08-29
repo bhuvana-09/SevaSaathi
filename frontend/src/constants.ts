@@ -15,6 +15,8 @@ export interface Translations {
   incomePlaceholder: string;
   categoryLabel: string;
   selectCategory: string;
+  genderLabel: string;
+  selectGender: string;
   educationLabel: string;
   selectEducation: string;
   submitBtn: string;
@@ -41,6 +43,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     incomePlaceholder: "e.g. 250000",
     categoryLabel: "Category",
     selectCategory: "Select Category",
+    genderLabel: "Gender",
+    selectGender: "Select Gender",
     educationLabel: "Education Level",
     selectEducation: "Select Education Level",
     submitBtn: "Submit",
@@ -65,6 +69,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     incomePlaceholder: "जैसे 250000",
     categoryLabel: "श्रेणी",
     selectCategory: "श्रेणी चुनें",
+    genderLabel: "लिंग",
+    selectGender: "लिंग चुनें",
     educationLabel: "शिक्षा का स्तर",
     selectEducation: "शिक्षा का स्तर चुनें",
     submitBtn: "सबमिट करें",
@@ -89,6 +95,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     incomePlaceholder: "ఉదా. 250000",
     categoryLabel: "వర్గం (కేటగిరీ)",
     selectCategory: "వర్గాన్ని ఎంచుకోండి",
+    genderLabel: "లింగం",
+    selectGender: "లింగాన్ని ఎంచుకోండి",
     educationLabel: "విద్యా అర్హత",
     selectEducation: "విద్యా అర్హతను ఎంచుకోండి",
     submitBtn: "సమర్పించండి",
@@ -146,6 +154,12 @@ export const CATEGORIES = [
   "ST",
   "EBC",
   "DNT"
+];
+
+export const GENDERS = [
+  "Male",
+  "Female",
+  "Other"
 ];
 
 export const EDUCATION_LEVELS = [

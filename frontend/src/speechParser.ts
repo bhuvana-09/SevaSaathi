@@ -50,6 +50,12 @@ const CATEGORY_MAP: Record<string, string[]> = {
   "DNT": ["dnt", "डीएनटी", "డీఎన్‌టీ", "denotified tribe", "विमुक्त जनजाति"]
 };
 
+const GENDER_MAP: Record<string, string[]> = {
+  "Male": ["male", "man", "boy", "पुरुष", "आदमी", "लड़का", "పురుషుడు", "మగ"],
+  "Female": ["female", "woman", "girl", "महिला", "स्त्री", "लड़की", "స్త్రీ", "మహిళ", "ఆడ"],
+  "Other": ["other", "transgender", "अन्य", "अन्य लिंग", "ఇతర", "ఇతర లింగం"]
+};
+
 export function parseSpeechToFormData(text: string, currentData: UserFormData): UserFormData {
   const updates: Partial<UserFormData> = {};
   const lowerText = text.toLowerCase().trim();
@@ -103,6 +109,17 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
       }
     }
     if (updates.category) break;
+  }
+
+  // 5. Extract Gender (Multilingual)
+  for (const [officialGender, variants] of Object.entries(GENDER_MAP)) {
+    for (const variant of variants) {
+      if (lowerText.includes(variant)) {
+        updates.gender = officialGender;
+        break;
+      }
+    }
+    if (updates.gender) break;
   }
 
   // 5. Extract Education Level (Multilingual)

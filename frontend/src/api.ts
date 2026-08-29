@@ -5,6 +5,7 @@ export interface ProfilePayload {
   state: string;
   income: number;
   category: string;
+  gender: string;
   education: string;
 }
 
@@ -17,6 +18,7 @@ export interface SchemeResult {
     states: string[];
     maxIncome: number;
     category: string[];
+    gender?: string[];
     education: string[];
   };
   documents: string[];

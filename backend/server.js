@@ -29,8 +29,8 @@ try {
  * Returns { isEligible: boolean, reasons: string[], failCount: number, nearMissReason: string|null }
  */
 function evaluateEligibility(profile, scheme) {
-  const { age, state, income, category, education } = profile;
-  const { maxAge, states, maxIncome, category: allowedCategories, education: allowedEducation } = scheme.eligibility;
+  const { age, state, income, category, gender, education } = profile;
+  const { maxAge, states, maxIncome, category: allowedCategories, gender: allowedGenders, education: allowedEducation } = scheme.eligibility;
 
   const reasons = [];
   let failCount = 0;
@@ -84,6 +84,19 @@ function evaluateEligibility(profile, scheme) {
       const msg = `Category (${category}) is not eligible; scheme requires: ${allowedCategories.join(', ')}.`;
       reasons.push(msg);
       nearMissReason = `Category is ${category}, but scheme requires ${allowedCategories.join(', ')}.`;
+    }
+  }
+
+  // Gender check
+  if (gender) {
+    const isGenderMatched = !allowedGenders || allowedGenders.includes('All') || allowedGenders.some(g => g.toLowerCase() === gender.toLowerCase());
+    if (isGenderMatched) {
+      reasons.push(`Gender (${gender}) meets scheme eligibility.`);
+    } else {
+      failCount++;
+      const msg = `Gender (${gender}) is not eligible; scheme is restricted to: ${allowedGenders.join(', ')}.`;
+      reasons.push(msg);
+      nearMissReason = `Gender is ${gender}, but scheme requires ${allowedGenders.join(', ')}.`;
     }
   }
 
@@ -217,7 +230,7 @@ app.post('/match', (req, res) => {
     return res.status(400).json({ error: 'User profile object is required in request body.' });
   }
 
-  const requiredFields = ['age', 'state', 'income', 'category', 'education'];
+  const requiredFields = ['age', 'state', 'income', 'category', 'gender', 'education'];
   const missingFields = requiredFields.filter(
     (field) => profile[field] === undefined || profile[field] === null || profile[field] === ''
   );

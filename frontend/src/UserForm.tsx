@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, FormEvent, useEffect, useRef } from 'react';
-import { INDIAN_STATES, CATEGORIES, EDUCATION_LEVELS, TRANSLATIONS, Language } from './constants';
+import { INDIAN_STATES, CATEGORIES, GENDERS, EDUCATION_LEVELS, TRANSLATIONS, Language } from './constants';
 import { parseSpeechToFormData } from './speechParser';
 import { matchSchemes, MatchResponse } from './api';
 import ResultsDisplay from './ResultsDisplay';
@@ -9,6 +9,7 @@ export interface UserFormData {
   state: string;
   income: string;
   category: string;
+  gender: string;
   educationLevel: string;
 }
 
@@ -56,6 +57,7 @@ export default function UserForm() {
     state: '',
     income: '',
     category: '',
+    gender: '',
     educationLevel: '',
   });
 
@@ -139,6 +141,7 @@ export default function UserForm() {
       state: formData.state,
       income: Number(formData.income),
       category: formData.category,
+      gender: formData.gender,
       education: formData.educationLevel,
     };
 
@@ -251,23 +254,41 @@ export default function UserForm() {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="category">{t.categoryLabel}</label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-            >
-              <option value="">{t.selectCategory}</option>
-              {CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="form-group">
+          <label htmlFor="category">{t.categoryLabel}</label>
+          <select
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+          >
+            <option value="">{t.selectCategory}</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="gender">{t.genderLabel}</label>
+          <select
+            id="gender"
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            required
+          >
+            <option value="">{t.selectGender}</option>
+            {GENDERS.map((gen) => (
+              <option key={gen} value={gen}>
+                {gen}
+              </option>
+            ))}
+          </select>
+        </div>
 
           <div className="form-group">
             <label htmlFor="educationLevel">{t.educationLabel}</label>
