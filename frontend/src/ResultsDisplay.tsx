@@ -19,9 +19,10 @@ export interface ResultsDisplayProps {
     nearMissReason?: string | null;
     reasons: string[];
   }>;
+  onChecklistStateChange?: (isOpen: boolean) => void;
 }
 
-export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDisplayProps) {
+export default function ResultsDisplay({ lang, eligible, nearMisses, onChecklistStateChange }: ResultsDisplayProps) {
   const [selectedChecklist, setSelectedChecklist] = useState<ChecklistResponse | null>(null);
   const [loadingSchemeId, setLoadingSchemeId] = useState<string | null>(null);
   const [checklistError, setChecklistError] = useState<string | null>(null);
@@ -138,6 +139,9 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
       setChecklistError(null);
       const data = await getChecklist(schemeId);
       setSelectedChecklist(data);
+      if (onChecklistStateChange) {
+        onChecklistStateChange(true);
+      }
 
       const translatedSchemeName = translateText(data.schemeName, lang);
       const docListStr = data.checklist.map((doc) => translateText(doc.document, lang)).join(', ');
@@ -168,6 +172,9 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
     setIsSpeaking(false);
     setSelectedChecklist(null);
     setChecklistError(null);
+    if (onChecklistStateChange) {
+      onChecklistStateChange(false);
+    }
   };
 
   return (

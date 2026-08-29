@@ -1,4 +1,5 @@
 import UserForm from './UserForm';
+import InfoCard from './InfoCard';
 
 function App() {
   return (
@@ -13,7 +14,12 @@ function App() {
         </p>
       </header>
       <main className="main-content">
-        <UserForm />
+        <div className="layout-grid">
+          <InfoCard />
+          <section className="form-results-column">
+            <UserForm />
+          </section>
+        </div>
       </main>
       <footer className="app-footer">
         <p>© 2026 SevaSaathi — Citizen Welfare Scheme Assistant</p>

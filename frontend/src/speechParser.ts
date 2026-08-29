@@ -60,10 +60,12 @@ const GENDER_MAP: Record<string, string[]> = {
 export function parseSpeechToFormData(text: string, currentData: UserFormData): UserFormData {
   const updates: Partial<UserFormData> = {};
   const lowerText = text.toLowerCase().trim();
+  // Remove commas inside digit sequences (e.g. 1,00,000 -> 100000)
+  const normalizedText = lowerText.replace(/(\d+),(?=\d)/g, '$1');
 
   // 1. Extract Age
-  const ageKeywordMatch = lowerText.match(/(?:age|umar|उम्र|आयु|వయస్సు|సాళ్ళు)\s*(?:is|:=)?\s*(\d{1,3})/i);
-  const ageUnitMatch = lowerText.match(/(\d{1,3})\s*(?:years|yr|yrs|saal|varsh|वर्ष|साल|సంవత్సరాలు|సాళ్ళు)/i);
+  const ageKeywordMatch = normalizedText.match(/(?:age|umar|उम्र|आयु|వయస్సు|సాళ్ళు)\s*(?:is|:=)?\s*(\d{1,3})/i);
+  const ageUnitMatch = normalizedText.match(/(\d{1,3})\s*(?:years|yr|yrs|saal|varsh|वर्ष|साल|సంవత్సరాలు|సాళ్ళు)/i);
 
   if (ageKeywordMatch && ageKeywordMatch[1]) {
     const num = parseInt(ageKeywordMatch[1], 10);
@@ -76,12 +78,12 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
       updates.age = num.toString();
     }
   } else {
-    // Standalone number check
-    const numbers = lowerText.match(/\b\d{1,2}\b/g);
+    // Standalone number check (ignore decimal numbers like 1.5 or 2.5)
+    const numbers = normalizedText.match(/(?<![\d.])\b\d{1,2}\b(?![\d.])/g);
     if (numbers) {
       for (const numStr of numbers) {
         const num = parseInt(numStr, 10);
-        const isClassNum = (num === 10 || num === 12 || num === 8) && (lowerText.includes('pass') || lowerText.includes('class') || lowerText.includes('तरगति'));
+        const isClassNum = (num === 10 || num === 12 || num === 8) && (normalizedText.includes('pass') || normalizedText.includes('class') || normalizedText.includes('तरगति') || normalizedText.includes('తరగతి'));
         if (num >= 5 && num <= 100 && !isClassNum) {
           updates.age = num.toString();
           break;
@@ -92,17 +94,25 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
 
   // 2. Extract Income
   let incomeVal: number | null = null;
-  const lakhMatch = lowerText.match(/(\d+(?:\.\d+)?)\s*(?:lakh|lakhs|lac|lacs|लाख|లక్ష|లక్షలు)/i);
+  const lakhMatch = normalizedText.match(/(\d+(?:\.\d+)?)\s*(?:lakh|lakhs|lac|lacs|लाख|లక్ష|లక్షలు|లక్షల)/i);
   if (lakhMatch) {
     incomeVal = parseFloat(lakhMatch[1]) * 100000;
   } else {
-    const thousandMatch = lowerText.match(/(\d+(?:\.\d+)?)\s*(?:thousand|thousands|hazaar|हज़ार|వేలు)/i);
+    const thousandMatch = normalizedText.match(/(\d+(?:\.\d+)?)\s*(?:thousand|thousands|hazaar|हज़ार|వేలు|వేల)/i);
     if (thousandMatch) {
       incomeVal = parseFloat(thousandMatch[1]) * 1000;
     } else {
-      const incomeMatch = lowerText.match(/(?:income|aay|aaya|iaka|आय|ఆదాయం|వార్షిక రాబడి)\s*(?:is|:=)?\s*(\d+)/i);
+      const incomeMatch = normalizedText.match(/(?:income|annual income|salary|aay|aaya|iaka|आय|वार्षिक आय|आवक|ఆదాయం|వార్షిక రాబడి|రాబడి|వార్షిక ఆదాయం|ఆదాయము)\s*(?:is|:=)?\s*(?:₹|rs\.?|inr)?\s*(\d+)/i);
       if (incomeMatch) {
         incomeVal = parseInt(incomeMatch[1], 10);
+      } else {
+        const directNumMatch = normalizedText.match(/(?:₹|rs\.?|inr)\s*(\d+)/i) || normalizedText.match(/\b(\d{4,8})\b/);
+        if (directNumMatch) {
+          const num = parseInt(directNumMatch[1], 10);
+          if (num >= 1000 && num <= 100000000) {
+            incomeVal = num;
+          }
+        }
       }
     }
   }

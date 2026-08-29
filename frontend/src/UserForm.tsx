@@ -3,6 +3,7 @@ import { INDIAN_STATES, CATEGORIES, GENDERS, EDUCATION_LEVELS, TRANSLATIONS, Lan
 import { parseSpeechToFormData } from './speechParser';
 import { matchSchemes, MatchResponse } from './api';
 import ResultsDisplay from './ResultsDisplay';
+import StepIndicator, { StepState } from './StepIndicator';
 
 export interface UserFormData {
   age: string;
@@ -64,6 +65,9 @@ export default function UserForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [matchResults, setMatchResults] = useState<MatchResponse | null>(null);
+
+  const [currentStep, setCurrentStep] = useState<StepState>(1);
+  const [isChecklistOpen, setIsChecklistOpen] = useState<boolean>(false);
 
   const [isListening, setIsListening] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
@@ -191,6 +195,7 @@ export default function UserForm() {
     try {
       const response = await matchSchemes(payload);
       setMatchResults(response);
+      setCurrentStep(2);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setApiError(err.message);
@@ -204,6 +209,12 @@ export default function UserForm() {
 
   return (
     <div className="main-wrapper">
+      <StepIndicator
+        currentStep={currentStep}
+        isChecklistOpen={isChecklistOpen}
+        hasResults={!!matchResults}
+      />
+
       <div className="form-card">
         <div className="top-bar">
           <div className="lang-selector">
@@ -372,6 +383,7 @@ export default function UserForm() {
           lang={lang}
           eligible={matchResults.eligible}
           nearMisses={matchResults.nearMisses}
+          onChecklistStateChange={(isOpen) => setIsChecklistOpen(isOpen)}
         />
       )}
     </div>
