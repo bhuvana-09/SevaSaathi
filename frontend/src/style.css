@@ -351,6 +351,16 @@ body {
   color: var(--text-primary);
 }
 
+.voice-fallback-banner {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+  padding: 0.625rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
 .speak-btn {
   display: inline-flex;
   align-items: center;

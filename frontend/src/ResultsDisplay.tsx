@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ChecklistResponse, getChecklist } from './api';
 import { Language, TRANSLATIONS } from './constants';
 import { speakText, stopSpeech } from './speechSynthesis';
+import { translateText } from './translateUtil';
 
 export interface ResultsDisplayProps {
   lang: Language;
@@ -25,51 +26,85 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
   const [loadingSchemeId, setLoadingSchemeId] = useState<string | null>(null);
   const [checklistError, setChecklistError] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+  const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
 
   const t = TRANSLATIONS[lang];
 
-  // Prepare full speech text for eligible schemes and near misses
-  const generateResultsSpeechText = () => {
-    let text = '';
-    if (eligible.length > 0) {
-      const eligibleNames = eligible.map((s) => s.name).join(', ');
+  // Helper to translate scheme objects for display
+  const translatedEligible = eligible.map((scheme) => ({
+    ...scheme,
+    name: translateText(scheme.name, lang),
+    description: translateText(scheme.description, lang),
+    reasons: scheme.reasons.map((r) => translateText(r, lang)),
+  }));
+
+  const translatedNearMisses = nearMisses.map((scheme) => ({
+    ...scheme,
+    name: translateText(scheme.name, lang),
+    description: translateText(scheme.description, lang),
+    nearMissReason: scheme.nearMissReason ? translateText(scheme.nearMissReason, lang) : null,
+    reasons: scheme.reasons.map((r) => translateText(r, lang)),
+  }));
+
+  // Build speech text looping through each scheme with its name & reason/gap explanation
+  const buildSpeechText = () => {
+    let textParts: string[] = [];
+
+    // Summary Header
+    if (translatedEligible.length > 0) {
       if (lang === 'hi') {
-        text += `आप ${eligible.length} योजनाओं के लिए पात्र हैं: ${eligibleNames}। `;
+        textParts.push(`आप ${translatedEligible.length} योजनाओं के लिए पात्र हैं।`);
       } else if (lang === 'te') {
-        text += `మీరు ${eligible.length} పథకాలకు అర్హులు: ${eligibleNames}. `;
+        textParts.push(`మీరు ${translatedEligible.length} పథకాలకు అర్హులు.`);
       } else {
-        text += `You are eligible for ${eligible.length} scheme${eligible.length > 1 ? 's' : ''}: ${eligibleNames}. `;
+        textParts.push(`You are eligible for ${translatedEligible.length} scheme${translatedEligible.length > 1 ? 's' : ''}.`);
       }
+
+      // Loop through eligible schemes
+      translatedEligible.forEach((scheme, index) => {
+        const firstReason = scheme.reasons[0] || '';
+        textParts.push(`${index + 1}. ${scheme.name}। ${firstReason}`);
+      });
     } else {
       if (lang === 'hi') {
-        text += `कोई पात्र योजना नहीं मिली। `;
+        textParts.push('कोई पात्र योजना नहीं मिली।');
       } else if (lang === 'te') {
-        text += `అర్హత ఉన్న పథకాలు ఏవీ లభించలేదు. `;
+        textParts.push('అర్హత ఉన్న పథకాలు ఏవీ లభించలేదు.');
       } else {
-        text += `No eligible schemes found. `;
+        textParts.push('No eligible schemes found.');
       }
     }
 
-    if (nearMisses.length > 0) {
+    if (translatedNearMisses.length > 0) {
       if (lang === 'hi') {
-        text += `${nearMisses.length} निकट-चूक योजनाएं भी हैं। `;
+        textParts.push(`${translatedNearMisses.length} निकट-चूक योजनाएं हैं।`);
       } else if (lang === 'te') {
-        text += `${nearMisses.length} దాదాపు అర్హత ఉన్న పథకాలు ఉన్నాయి. `;
+        textParts.push(`${translatedNearMisses.length} దాదాపు అర్హత ఉన్న పథకాలు ఉన్నాయి.`);
       } else {
-        text += `There are also ${nearMisses.length} near-miss scheme${nearMisses.length > 1 ? 's' : ''}. `;
+        textParts.push(`There are ${translatedNearMisses.length} near-miss scheme${translatedNearMisses.length > 1 ? 's' : ''}.`);
       }
+
+      // Loop through near-miss schemes
+      translatedNearMisses.forEach((scheme, index) => {
+        const gap = scheme.nearMissReason || scheme.reasons[0] || '';
+        textParts.push(`${index + 1}. ${scheme.name}। ${gap}`);
+      });
     }
 
-    return text;
+    return textParts.join(' ');
   };
 
-  // Trigger speech synthesis on initial render of results
+  const executeSpeech = (textToRead: string) => {
+    if (!textToRead.trim()) return;
+    setIsSpeaking(true);
+    const { fallbackNotice } = speakText(textToRead, lang, () => setIsSpeaking(false));
+    setVoiceNotice(fallbackNotice);
+  };
+
+  // Trigger speech on initial load of results
   useEffect(() => {
-    const textToRead = generateResultsSpeechText();
-    if (textToRead) {
-      setIsSpeaking(true);
-      speakText(textToRead, lang, () => setIsSpeaking(false));
-    }
+    const speechContent = buildSpeechText();
+    executeSpeech(speechContent);
 
     return () => {
       stopSpeech();
@@ -81,9 +116,8 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
       stopSpeech();
       setIsSpeaking(false);
     } else {
-      const textToRead = generateResultsSpeechText();
-      setIsSpeaking(true);
-      speakText(textToRead, lang, () => setIsSpeaking(false));
+      const speechContent = buildSpeechText();
+      executeSpeech(speechContent);
     }
   };
 
@@ -94,19 +128,19 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
       const data = await getChecklist(schemeId);
       setSelectedChecklist(data);
 
-      // Read aloud the checklist for this scheme
-      const docListStr = data.checklist.map((doc) => doc.document).join(', ');
-      let checklistText = '';
+      const translatedSchemeName = translateText(data.schemeName, lang);
+      const docListStr = data.checklist.map((doc) => translateText(doc.document, lang)).join(', ');
+
+      let checklistSpeech = '';
       if (lang === 'hi') {
-        checklistText = `${data.schemeName} के लिए आवश्यक दस्तावेज हैं: ${docListStr}।`;
+        checklistSpeech = `${translatedSchemeName} के लिए आवश्यक दस्तावेज हैं: ${docListStr}।`;
       } else if (lang === 'te') {
-        checklistText = `${data.schemeName} కోసం అవసరమైన పత్రాలు: ${docListStr}.`;
+        checklistSpeech = `${translatedSchemeName} కోసం అవసరమైన పత్రాలు: ${docListStr}.`;
       } else {
-        checklistText = `Required documents for ${data.schemeName} are: ${docListStr}.`;
+        checklistSpeech = `Required documents for ${translatedSchemeName} are: ${docListStr}.`;
       }
 
-      setIsSpeaking(true);
-      speakText(checklistText, lang, () => setIsSpeaking(false));
+      executeSpeech(checklistSpeech);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setChecklistError(err.message);
@@ -138,7 +172,13 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
         </button>
       </div>
 
-      {eligible.length === 0 && nearMisses.length === 0 && (
+      {voiceNotice && (
+        <div className="voice-fallback-banner">
+          ℹ️ {voiceNotice}
+        </div>
+      )}
+
+      {translatedEligible.length === 0 && translatedNearMisses.length === 0 && (
         <div className="empty-state-card">
           <div className="empty-state-icon">🔍</div>
           <h3>No matching schemes found</h3>
@@ -157,13 +197,13 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
       )}
 
       {/* Eligible Schemes (Green) */}
-      {eligible.length > 0 && (
+      {translatedEligible.length > 0 && (
         <div className="results-section">
           <h3 className="section-heading eligible-heading">
-            🟢 Eligible Schemes ({eligible.length})
+            🟢 Eligible Schemes ({translatedEligible.length})
           </h3>
           <div className="cards-grid">
-            {eligible.map((scheme) => (
+            {translatedEligible.map((scheme) => (
               <div key={scheme.id} className="scheme-card eligible-card">
                 <div className="scheme-header">
                   <h4>{scheme.name}</h4>
@@ -195,13 +235,13 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
       )}
 
       {/* Near Misses (Yellow) */}
-      {nearMisses.length > 0 && (
+      {translatedNearMisses.length > 0 && (
         <div className="results-section">
           <h3 className="section-heading nearmiss-heading">
-            🟡 Near-Miss Schemes ({nearMisses.length})
+            🟡 Near-Miss Schemes ({translatedNearMisses.length})
           </h3>
           <div className="cards-grid">
-            {nearMisses.map((scheme) => (
+            {translatedNearMisses.map((scheme) => (
               <div key={scheme.id} className="scheme-card nearmiss-card">
                 <div className="scheme-header">
                   <h4>{scheme.name}</h4>
@@ -252,7 +292,7 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Checklist: {selectedChecklist.schemeName}</h3>
+              <h3>Checklist: {translateText(selectedChecklist.schemeName, lang)}</h3>
               <button type="button" className="close-btn" onClick={closeModal}>
                 &times;
               </button>
@@ -262,9 +302,9 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
               <ul className="checklist-items">
                 {selectedChecklist.checklist.map((item, index) => (
                   <li key={index} className="checklist-item">
-                    <div className="doc-name">📄 {item.document}</div>
-                    <div className="doc-desc">{item.description}</div>
-                    <div className="doc-hint">💡 <strong>How to obtain:</strong> {item.hint}</div>
+                    <div className="doc-name">📄 {translateText(item.document, lang)}</div>
+                    <div className="doc-desc">{translateText(item.description, lang)}</div>
+                    <div className="doc-hint">💡 <strong>How to obtain:</strong> {translateText(item.hint, lang)}</div>
                   </li>
                 ))}
               </ul>
