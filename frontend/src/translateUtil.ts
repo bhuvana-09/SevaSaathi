@@ -33,7 +33,7 @@ export function translateText(text: string, targetLang: Language): string {
     "Rajarshi Chhatrapati Shahu Maharaj Merit Scholarship (Maharashtra)": {
       en: "Rajarshi Chhatrapati Shahu Maharaj Merit Scholarship (Maharashtra)",
       hi: "राजर्षि छत्रपति शाहू महाराज मेरिट छात्रवृत्ति (महाराष्ट्र)",
-      te: "రాజర్షి ఛత్రపతి షాహూ మహారాజ్ మెరిట్ స్కాలర్‌షిప్ (మహారాష్ట్ర)"
+      te: "రాజర్షి ఛత్రపతి షాహూ మహారాజ్ మెరిట్ छात्रवृत्ति (महारष्ट्र)"
     }
   };
 
@@ -51,22 +51,23 @@ export function translateText(text: string, targetLang: Language): string {
       .replace(/Scholarship provided by AICTE to empower girl students pursuing technical education in approved degree or diploma institutions\./g, "अनुमोदित डिग्री या डिप्लोमा संस्थानों में तकनीकी शिक्षा प्राप्त कर रही छात्राओं को सशक्त बनाने के लिए एआईसीटीई द्वारा प्रदान की जाने वाली छात्रवृत्ति।")
       .replace(/Awarded to meritorious students of economically weaker sections to arrest their drop out at class 8 and encourage them to continue study at secondary stage\./g, "आर्थिक रूप से कमजोर वर्गों के मेधावी छात्रों को कक्षा 8 में उनकी पढ़ाई छोड़ने से रोकने और माध्यमिक स्तर पर पढ़ाई जारी रखने के लिए प्रोत्साहित करने हेतु सम्मानित किया जाता है।")
       .replace(/State scholarship by Maharashtra Government providing financial assistance to EWS and General category students pursuing higher professional education\./g, "महाराष्ट्र सरकार द्वारा उच्च व्यावसायिक शिक्षा प्राप्त कर रहे ईडब्ल्यूएस और सामान्य श्रेणी के छात्रों को वित्तीय सहायता प्रदान करने वाली राज्य छात्रवृत्ति।")
-      .replace(/Age \((\d+)\) is within the maximum limit of (\d+) years\./g, "आयु ($1) अधिकतम सीमा $2 वर्ष के भीतर है।")
-      .replace(/Age \((\d+)\) exceeds the limit by (\d+) years? \(limit: (\d+) years\)\./g, "आयु ($1) सीमा से $2 वर्ष अधिक है (सीमा: $3 वर्ष)।")
-      .replace(/State \((\w+)\) is eligible\./g, "राज्य ($1) पात्र है।")
-      .replace(/State \((\w+)\) is not eligible; scheme is restricted to: (.+)\./g, "राज्य ($1) पात्र नहीं है; योजना केवल $2 के लिए सीमित है।")
+      .replace(/Age \((.+)\) is within the maximum limit of (.+) years\./g, "आयु ($1) अधिकतम सीमा $2 वर्ष के भीतर है।")
+      .replace(/Age \((.+)\) exceeds the limit by (.+) year(?:s)? \(limit: (.+) years\)\./g, "आयु ($1) सीमा से $2 वर्ष अधिक है (सीमा: $3 वर्ष)।")
+      .replace(/State \((.+)\) is eligible\./g, "राज्य ($1) पात्र है।")
+      .replace(/State \((.+)\) is not eligible; scheme is restricted to: (.+)\./g, "राज्य ($1) पात्र नहीं है; योजना केवल $2 के लिए सीमित है।")
       .replace(/Annual income \(₹(.+)\) is within the upper threshold of ₹(.+)\./g, "वार्षिक आय (₹$1) ₹$2 की ऊपरी सीमा के भीतर है।")
       .replace(/Annual income \(₹(.+)\) exceeds limit by ₹(.+)\./g, "वार्षिक आय (₹$1) की सीमा ₹$2 से अधिक है।")
-      .replace(/Gender \((\w+)\) meets scheme eligibility\./g, "लिंग ($1) योजना की पात्रता को पूरा करता है।")
-      .replace(/Gender \((\w+)\) is not eligible; scheme is restricted to: (.+)\./g, "लिंग ($1) पात्र नहीं है; योजना केवल $2 के लिए सीमित है।")
-      .replace(/Gender is (\w+), but scheme requires (.+)\./g, "लिंग $1 है, लेकिन योजना के लिए $2 की आवश्यकता है।")
-      .replace(/Category \((\w+)\) is not eligible; scheme requires: (.+)\./g, "श्रेणी ($1) पात्र नहीं है; योजना के लिए आवश्यकता: $2।")
+      .replace(/Category \((.+)\) matches scheme requirements \((.+)\)\./g, "श्रेणी ($1) योजना की आवश्यकताओं ($2) से मेल खाती है।")
+      .replace(/Category \((.+)\) is not eligible; scheme requires: (.+)\./g, "श्रेणी ($1) पात्र नहीं है; योजना के लिए आवश्यकता: $2।")
+      .replace(/Gender \((.+)\) meets scheme eligibility\./g, "लिंग ($1) योजना की पात्रता को पूरा करता है।")
+      .replace(/Gender \((.+)\) is not eligible; scheme is restricted to: (.+)\./g, "लिंग ($1) पात्र नहीं है; योजना केवल $2 के लिए सीमित है।")
       .replace(/Education level \((.+)\) meets eligibility criteria\./g, "शिक्षा का स्तर ($1) पात्रता मानदंडों को पूरा करता है।")
       .replace(/Education level \((.+)\) is not listed; requires: (.+)\./g, "शिक्षा का स्तर ($1) सूचीबद्ध नहीं है; आवश्यकता: $2।")
-      .replace(/Age is (\d+) years? above the limit of (\d+) years\./g, "आयु $2 वर्ष की सीमा से $1 वर्ष अधिक है।")
+      .replace(/Age is (.+) year(?:s)? above the limit of (.+) years\./g, "आयु $2 वर्ष की सीमा से $1 वर्ष अधिक है।")
       .replace(/Income is ₹(.+) above the limit of ₹(.+)\./g, "आय ₹$2 की सीमा से ₹$1 अधिक है।")
-      .replace(/Category is (\w+), but scheme requires (.+)\./g, "श्रेणी $1 है, लेकिन योजना के लिए $2 की आवश्यकता है।")
-      .replace(/State is (\w+), but scheme is restricted to (.+)\./g, "राज्य $1 है, लेकिन योजना $2 के लिए सीमित है।")
+      .replace(/Category is (.+), but scheme requires (.+)\./g, "श्रेणी $1 है, लेकिन योजना के लिए $2 की आवश्यकता है।")
+      .replace(/Gender is (.+), but scheme requires (.+)\./g, "लिंग $1 है, लेकिन योजना के लिए $2 की आवश्यकता है।")
+      .replace(/State is (.+), but scheme is restricted to (.+)\./g, "राज्य $1 है, लेकिन योजना $2 के लिए सीमित है।")
       .replace(/Education level is (.+), but scheme requires (.+)\./g, "शिक्षा का स्तर $1 है, लेकिन योजना के लिए $2 की आवश्यकता है।");
   } else if (targetLang === 'te') {
     translated = translated
@@ -76,22 +77,23 @@ export function translateText(text: string, targetLang: Language): string {
       .replace(/Scholarship provided by AICTE to empower girl students pursuing technical education in approved degree or diploma institutions\./g, "సాంకేతిక విద్యను అభ్యసిస్తున్న బాలికలను సాధికారులను చేయడానికి AICTE అందించే స్కాలర్‌షిప్.")
       .replace(/Awarded to meritorious students of economically weaker sections to arrest their drop out at class 8 and encourage them to continue study at secondary stage\./g, "ఆర్థికంగా వెనుకబడిన వర్గాల ప్రతిభావంతులైన విద్యార్థులకు 8వ తరగతిలో బడి మానకుండా ఉన్నత చదువులు కొనసాగించడానికి లభించే స్కాలర్‌షిప్.")
       .replace(/State scholarship by Maharashtra Government providing financial assistance to EWS and General category students pursuing higher professional education\./g, "ఉన్నత వృత్తి విద్యను అభ్యసిస్తున్న ఇడబ్ల్యూఎస్ మరియు జనరల్ కేటగిరీ విద్యార్థులకు మహారాష్ట్ర ప్రభుత్వం అందించే రాష్ట్ర స్కాలర్‌షిప్.")
-      .replace(/Age \((\d+)\) is within the maximum limit of (\d+) years\./g, "వయస్సు ($1) గరిష్ట పరిమితి $2 సంవత్సరాల లోపు ఉంది.")
-      .replace(/Age \((\d+)\) exceeds the limit by (\d+) years? \(limit: (\d+) years\)\./g, "వయస్సు ($1) పరిమితి కంటే $2 సంవత్సరాలు ఎక్కువ ఉంది (పరిమితి: $3 సంవత్సరాలు).")
-      .replace(/State \((\w+)\) is eligible\./g, "రాష్ట్రం ($1) అర్హత కలిగి ఉంది.")
-      .replace(/State \((\w+)\) is not eligible; scheme is restricted to: (.+)\./g, "రాష్ట్రం ($1) అర్హత లేదు; ఈ పథకం $2కు మాత్రమే పరిమితం.")
+      .replace(/Age \((.+)\) is within the maximum limit of (.+) years\./g, "వయస్సు ($1) గరిష్ట పరిమితి $2 సంవత్సరాల లోపు ఉంది.")
+      .replace(/Age \((.+)\) exceeds the limit by (.+) year(?:s)? \(limit: (.+) years\)\./g, "వయస్సు ($1) పరిమితి కంటే $2 సంవత్సరాలు ఎక్కువ ఉంది (పరిమితి: $3 సంవత్సరాలు).")
+      .replace(/State \((.+)\) is eligible\./g, "రాష్ట్రం ($1) అర్హత కలిగి ఉంది.")
+      .replace(/State \((.+)\) is not eligible; scheme is restricted to: (.+)\./g, "రాష్ట్రం ($1) అర్హత లేదు; ఈ పథకం $2కు మాత్రమే పరిమితం.")
       .replace(/Annual income \(₹(.+)\) is within the upper threshold of ₹(.+)\./g, "వార్షిక ఆదాయం (₹$1) పరిమితి ₹$2 లోపు ఉంది.")
       .replace(/Annual income \(₹(.+)\) exceeds limit by ₹(.+)\./g, "వార్షిక ఆదాయం (₹$1) పరిమితి ₹$2 కంటే ఎక్కువ ఉంది.")
-      .replace(/Gender \((\w+)\) meets scheme eligibility\./g, "లింగం ($1) అర్హత ప్రమాణాలను అందుకుంటోంది.")
-      .replace(/Gender \((\w+)\) is not eligible; scheme is restricted to: (.+)\./g, "లింగం ($1) అర్హత లేదు; ఈ పథకం $2కు మాత్రమే పరిమితం.")
-      .replace(/Gender is (\w+), but scheme requires (.+)\./g, "లింగం $1, కానీ పథకానికి $2 అవసరం.")
-      .replace(/Category \((\w+)\) is not eligible; scheme requires: (.+)\./g, "వర్గం ($1) అర్హత లేదు; వర్గం అవసరం: $2.")
+      .replace(/Category \((.+)\) matches scheme requirements \((.+)\)\./g, "వర్గం ($1) పథకం అవసరాలకు సరిపోలుతుంది.")
+      .replace(/Category \((.+)\) is not eligible; scheme requires: (.+)\./g, "వర్గం ($1) అర్హత లేదు; వర్గం అవసరం: $2.")
+      .replace(/Gender \((.+)\) meets scheme eligibility\./g, "లింగం ($1) అర్హత ప్రమాణాలను అందుకుంటోంది.")
+      .replace(/Gender \((.+)\) is not eligible; scheme is restricted to: (.+)\./g, "లింగం ($1) అర్హత లేదు; ఈ పథకం $2కు మాత్రమే పరిమితం.")
       .replace(/Education level \((.+)\) meets eligibility criteria\./g, "విద్యా అర్హత ($1) అర్హత ప్రమాణాలను అందుకంటోంది.")
       .replace(/Education level \((.+)\) is not listed; requires: (.+)\./g, "విద్యా అర్హత ($1) అర్హత లేదు; అవసరం: $2.")
-      .replace(/Age is (\d+) years? above the limit of (\d+) years\./g, "వయస్సు $2 సంవత్సరాల పరిమితి కంటే $1 సంవత్సరాలు ఎక్కువ ఉంది.")
+      .replace(/Age is (.+) year(?:s)? above the limit of (.+) years\./g, "వయస్సు $2 సంవత్సరాల పరిమితి కంటే $1 సంవత్సరాలు ఎక్కువ ఉంది.")
       .replace(/Income is ₹(.+) above the limit of ₹(.+)\./g, "ఆదాయం ₹$2 పరిమితి కంటే ₹$1 ఎక్కువ ఉంది.")
-      .replace(/Category is (\w+), but scheme requires (.+)\./g, "వర్గం $1, కానీ పథకానికి $2 అవసరం.")
-      .replace(/State is (\w+), but scheme is restricted to (.+)\./g, "రాష్ట్రం $1, కానీ పథకం $2కు పరిమితం.")
+      .replace(/Category is (.+), but scheme requires (.+)\./g, "వర్గం $1, కానీ పథకానికి $2 అవసరం.")
+      .replace(/Gender is (.+), but scheme requires (.+)\./g, "లింగం $1, కానీ పథకానికి $2 అవసరం.")
+      .replace(/State is (.+), but scheme is restricted to (.+)\./g, "రాష్ట్రం $1, కానీ పథకం $2కు పరిమితం.")
       .replace(/Education level is (.+), but scheme requires (.+)\./g, "విద్యా అర్హత $1, కానీ పథకానికి $2 అవసరం.");
   }
 

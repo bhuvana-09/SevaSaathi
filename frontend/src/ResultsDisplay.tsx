@@ -60,7 +60,7 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
         textParts.push(`You are eligible for ${translatedEligible.length} scheme${translatedEligible.length > 1 ? 's' : ''}.`);
       }
 
-      // Loop through eligible schemes
+      // Loop through each eligible scheme and read name + first reason
       translatedEligible.forEach((scheme, index) => {
         const firstReason = scheme.reasons[0] || '';
         textParts.push(`${index + 1}. ${scheme.name}। ${firstReason}`);
@@ -84,7 +84,7 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
         textParts.push(`There are ${translatedNearMisses.length} near-miss scheme${translatedNearMisses.length > 1 ? 's' : ''}.`);
       }
 
-      // Loop through near-miss schemes
+      // Loop through each near-miss scheme and read name + gap explanation
       translatedNearMisses.forEach((scheme, index) => {
         const gap = scheme.nearMissReason || scheme.reasons[0] || '';
         textParts.push(`${index + 1}. ${scheme.name}। ${gap}`);
@@ -94,10 +94,10 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
     return textParts.join(' ');
   };
 
-  const executeSpeech = (textToRead: string) => {
+  const executeSpeech = async (textToRead: string) => {
     if (!textToRead.trim()) return;
     setIsSpeaking(true);
-    const { fallbackNotice } = speakText(textToRead, lang, () => setIsSpeaking(false));
+    const { fallbackNotice } = await speakText(textToRead, lang, () => setIsSpeaking(false));
     setVoiceNotice(fallbackNotice);
   };
 
@@ -111,14 +111,14 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
     };
   }, [eligible, nearMisses, lang]);
 
-  const handleToggleSpeakResults = () => {
-    if (isSpeaking) {
-      stopSpeech();
-      setIsSpeaking(false);
-    } else {
-      const speechContent = buildSpeechText();
-      executeSpeech(speechContent);
-    }
+  const handleStartSpeakResults = () => {
+    const speechContent = buildSpeechText();
+    executeSpeech(speechContent);
+  };
+
+  const handleStopSpeech = () => {
+    stopSpeech();
+    setIsSpeaking(false);
   };
 
   const handleFetchChecklist = async (schemeId: string) => {
@@ -163,13 +163,24 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
     <div className="results-container">
       <div className="results-header-bar">
         <h2 className="results-title">Scheme Matching Results</h2>
-        <button
-          type="button"
-          onClick={handleToggleSpeakResults}
-          className={`speak-btn ${isSpeaking ? 'speaking' : ''}`}
-        >
-          {isSpeaking ? t.stopReading : t.readAloud}
-        </button>
+        <div className="audio-controls-group">
+          <button
+            type="button"
+            onClick={handleStartSpeakResults}
+            className={`speak-btn ${isSpeaking ? 'speaking' : ''}`}
+            title="Read results aloud"
+          >
+            {t.readAloud}
+          </button>
+          <button
+            type="button"
+            onClick={handleStopSpeech}
+            className="stop-btn"
+            title="Immediately halt narration"
+          >
+            {t.stopReading}
+          </button>
+        </div>
       </div>
 
       {voiceNotice && (

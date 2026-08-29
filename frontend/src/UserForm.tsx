@@ -69,57 +69,98 @@ export default function UserForm() {
   const [transcript, setTranscript] = useState<string>('');
   const [voiceNotice, setVoiceNotice] = useState<string>('');
 
-  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const activeRecognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const t = TRANSLATIONS[lang];
 
+  // Stop recognition if component unmounts
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      recognition.onstart = () => {
-        setIsListening(true);
-        setVoiceNotice('');
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error('Speech recognition error', event.error);
-        setIsListening(false);
-      };
-
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        const spokenText = event.results[0][0].transcript;
-        setTranscript(spokenText);
-        setFormData((prev) => parseSpeechToFormData(spokenText, prev));
-        setVoiceNotice(t.voiceSuccess);
-      };
-
-      recognitionRef.current = recognition;
-    }
-  }, [lang, t.voiceSuccess]);
+    return () => {
+      if (activeRecognitionRef.current) {
+        try {
+          activeRecognitionRef.current.stop();
+        } catch (e) {
+          console.warn('[SpeechRec] Error stopping recognition on unmount:', e);
+        }
+      }
+    };
+  }, []);
 
   const toggleListening = () => {
-    if (!recognitionRef.current) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
       alert(t.micNotSupported);
       return;
     }
 
     if (isListening) {
-      recognitionRef.current.stop();
-    } else {
+      console.log('[SpeechRec] User requested stop.');
+      if (activeRecognitionRef.current) {
+        try {
+          activeRecognitionRef.current.stop();
+        } catch (e) {
+          console.error('[SpeechRec] Error stopping active instance:', e);
+        }
+      }
+      setIsListening(false);
+      return;
+    }
+
+    // Create a fresh SpeechRecognition instance on demand
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
       const langCodes: Record<Language, string> = {
         en: 'en-IN',
         hi: 'hi-IN',
         te: 'te-IN',
       };
-      recognitionRef.current.lang = langCodes[lang];
-      recognitionRef.current.start();
+
+      recognition.lang = langCodes[lang] || 'en-IN';
+      console.log('[SpeechRec] Initializing new session with lang:', recognition.lang);
+
+      recognition.onstart = () => {
+        console.log('[SpeechRec] onstart: Listening active.');
+        setIsListening(true);
+        setVoiceNotice('');
+      };
+
+      recognition.onend = () => {
+        console.log('[SpeechRec] onend: Session ended.');
+        setIsListening(false);
+      };
+
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error('[SpeechRec] onerror:', event.error);
+        setIsListening(false);
+      };
+
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        try {
+          const spokenText = event.results[0][0].transcript;
+          console.log('[SpeechRec] onresult raw transcript:', spokenText);
+          setTranscript(spokenText);
+
+          setFormData((prev) => {
+            const parsed = parseSpeechToFormData(spokenText, prev);
+            console.log('[SpeechRec] Form data updated after parsing:', parsed);
+            return parsed;
+          });
+
+          setVoiceNotice(t.voiceSuccess);
+        } catch (err) {
+          console.error('[SpeechRec] Error inside onresult handler:', err);
+        }
+      };
+
+      activeRecognitionRef.current = recognition;
+      recognition.start();
+      console.log('[SpeechRec] recognition.start() called.');
+    } catch (err) {
+      console.error('[SpeechRec] Failed to start speech recognition:', err);
+      setIsListening(false);
     }
   };
 
@@ -254,41 +295,41 @@ export default function UserForm() {
             />
           </div>
 
-        <div className="form-group">
-          <label htmlFor="category">{t.categoryLabel}</label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          >
-            <option value="">{t.selectCategory}</option>
-            {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="form-group">
+            <label htmlFor="category">{t.categoryLabel}</label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              required
+            >
+              <option value="">{t.selectCategory}</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="gender">{t.genderLabel}</label>
-          <select
-            id="gender"
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            required
-          >
-            <option value="">{t.selectGender}</option>
-            {GENDERS.map((gen) => (
-              <option key={gen} value={gen}>
-                {gen}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="form-group">
+            <label htmlFor="gender">{t.genderLabel}</label>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              required
+            >
+              <option value="">{t.selectGender}</option>
+              {GENDERS.map((gen) => (
+                <option key={gen} value={gen}>
+                  {gen}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="form-group">
             <label htmlFor="educationLevel">{t.educationLabel}</label>
