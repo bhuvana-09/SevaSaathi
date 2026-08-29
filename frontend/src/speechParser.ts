@@ -42,7 +42,7 @@ const STATE_MAP: Record<string, string[]> = {
 
 // Mappings for Categories in English, Hindi, Telugu, and Devanagari/Telugu scripts
 const CATEGORY_MAP: Record<string, string[]> = {
-  "General": ["general", "सामान्य", "జనరల్", "unreserved", "अनारक्षित", "ओपन", "ఓపెన్"],
+  "General": ["general", "सामान्य", "जनरल", "జనరల్", "unreserved", "अनारक्षित", "ओपन", "ఓపెన్"],
   "OBC": ["obc", "ओबीसी", "ఓబీసీ", "other backward class", "अन्य पिछड़ा वर्ग", "వెనుకబడిన తరగతి"],
   "SC": ["sc", "एससी", "ఎస్సీ", "scheduled caste", "अनुसूचित जाति", "షెడ్యూల్డ్ కులాలు"],
   "ST": ["st", "एसटी", "ఎస్టీ", "scheduled tribe", "अनुसूचित जनजाति", "షెడ్యూల్డ్ తెగలు"],
@@ -61,11 +61,31 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
   const lowerText = text.toLowerCase().trim();
 
   // 1. Extract Age
-  const ageMatch = lowerText.match(/(?:age|aage|umar|उम्र|आयु|వయస్సు|సాళ్ళు|సాల్|वर्ष|साल)?\s*(\d{1,3})\s*(?:years|yr|yrs|saal|varsh|वर्ष|साल|వయస్సు|సంవత్సరాలు)?/i);
-  if (ageMatch && ageMatch[1]) {
-    const num = parseInt(ageMatch[1], 10);
+  const ageKeywordMatch = lowerText.match(/(?:age|umar|उम्र|आयु|వయస్సు|సాళ్ళు)\s*(?:is|:=)?\s*(\d{1,3})/i);
+  const ageUnitMatch = lowerText.match(/(\d{1,3})\s*(?:years|yr|yrs|saal|varsh|वर्ष|साल|సంవత్సరాలు|సాళ్ళు)/i);
+
+  if (ageKeywordMatch && ageKeywordMatch[1]) {
+    const num = parseInt(ageKeywordMatch[1], 10);
     if (num > 0 && num <= 120) {
       updates.age = num.toString();
+    }
+  } else if (ageUnitMatch && ageUnitMatch[1]) {
+    const num = parseInt(ageUnitMatch[1], 10);
+    if (num > 0 && num <= 120) {
+      updates.age = num.toString();
+    }
+  } else {
+    // Standalone number check
+    const numbers = lowerText.match(/\b\d{1,2}\b/g);
+    if (numbers) {
+      for (const numStr of numbers) {
+        const num = parseInt(numStr, 10);
+        const isClassNum = (num === 10 || num === 12 || num === 8) && (lowerText.includes('pass') || lowerText.includes('class') || lowerText.includes('तरगति'));
+        if (num >= 5 && num <= 100 && !isClassNum) {
+          updates.age = num.toString();
+          break;
+        }
+      }
     }
   }
 
@@ -122,7 +142,7 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
     if (updates.gender) break;
   }
 
-  // 5. Extract Education Level (Multilingual)
+  // 6. Extract Education Level (Multilingual)
   if (
     lowerText.includes('below 10') ||
     lowerText.includes('10th fail') ||
@@ -136,7 +156,8 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
     lowerText.includes('10 pass') ||
     lowerText.includes('मैट्रिक') ||
     lowerText.includes('दसवीं') ||
-    lowerText.includes('10వ తరగతి')
+    lowerText.includes('10వ తరగతి') ||
+    lowerText.includes('పదవ తరగతి')
   ) {
     updates.educationLevel = '10th Pass (SSC)';
   } else if (

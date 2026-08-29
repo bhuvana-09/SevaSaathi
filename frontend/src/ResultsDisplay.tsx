@@ -309,13 +309,13 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
               </button>
             </div>
             <div className="modal-body">
-              <p className="modal-intro">Required documents and how to obtain them:</p>
+              <p className="modal-intro">{t.modalIntro}</p>
               <ul className="checklist-items">
                 {selectedChecklist.checklist.map((item, index) => (
                   <li key={index} className="checklist-item">
                     <div className="doc-name">📄 {translateText(item.document, lang)}</div>
                     <div className="doc-desc">{translateText(item.description, lang)}</div>
-                    <div className="doc-hint">💡 <strong>How to obtain:</strong> {translateText(item.hint, lang)}</div>
+                    <div className="doc-hint">💡 <strong>{t.howToObtain}</strong> {translateText(item.hint, lang)}</div>
                   </li>
                 ))}
               </ul>

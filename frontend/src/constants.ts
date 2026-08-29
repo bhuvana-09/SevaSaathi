@@ -25,6 +25,8 @@ export interface Translations {
   readAloud: string;
   stopReading: string;
   checklistFor: string;
+  modalIntro: string;
+  howToObtain: string;
 }
 
 export const TRANSLATIONS: Record<Language, Translations> = {
@@ -52,7 +54,9 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     voiceSuccess: "Voice input processed!",
     readAloud: "🔊 Read Aloud Results",
     stopReading: "⏹️ Stop Voice",
-    checklistFor: "Checklist for"
+    checklistFor: "Checklist for",
+    modalIntro: "Required documents and how to obtain them:",
+    howToObtain: "How to obtain:"
   },
   hi: {
     title: "उपयोगकर्ता जानकारी",
@@ -78,7 +82,9 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     voiceSuccess: "वॉयस इनपुट संसाधित हो गया!",
     readAloud: "🔊 परिणाम सुनकर जानें",
     stopReading: "⏹️ आवाज़ बंद करें",
-    checklistFor: "चेकलिस्ट"
+    checklistFor: "चेकलिस्ट",
+    modalIntro: "आवश्यक दस्तावेज और उन्हें कैसे प्राप्त करें:",
+    howToObtain: "कैसे प्राप्त करें:"
   },
   te: {
     title: "వినియోగదారు సమాచారం",
@@ -104,7 +110,9 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     voiceSuccess: "వాయిస్ ఇన్‌పుట్ ప్రాసెస్ చేయబడింది!",
     readAloud: "🔊 ఫలితాలను బిగ్గరగా వినండి",
     stopReading: "⏹️ వాయిస్ ఆపండి",
-    checklistFor: "చెక్‌లిస్ట్"
+    checklistFor: "చెక్‌లిస్ట్",
+    modalIntro: "అవసరమైన పత్రాలు మరియు వాటిని ఎలా పొందాలి:",
+    howToObtain: "ఎలా పొందాలి:"
   }
 };
 
