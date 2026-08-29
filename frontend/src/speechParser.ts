@@ -1,13 +1,61 @@
-import { INDIAN_STATES, CATEGORIES } from './constants';
 import { UserFormData } from './UserForm';
+
+// Mappings for Indian States in English, Hindi, Telugu, and Common Transliterations
+const STATE_MAP: Record<string, string[]> = {
+  "Andhra Pradesh": ["andhra pradesh", "आंध्र प्रदेश", "ఆంధ్ర ప్రదేశ్", "andhra", "ఆంధ్ర"],
+  "Arunachal Pradesh": ["arunachal pradesh", "अरुणाचल प्रदेश", "అరుణాచల్ ప్రదేశ్", "arunachal"],
+  "Assam": ["assam", "असम", "అస్సాం", "asom"],
+  "Bihar": ["bihar", "बिहार", "బీహార్"],
+  "Chhattisgarh": ["chhattisgarh", "छत्तीसगढ़", "ఛత్తీస్‌గఢ్"],
+  "Goa": ["goa", "गोवा", "గోవా"],
+  "Gujarat": ["gujarat", "गुजरात", "గుజరాత్"],
+  "Haryana": ["haryana", "हरियाणा", "హర్యానా"],
+  "Himachal Pradesh": ["himachal pradesh", "हिमाचल प्रदेश", "హిమాచల్ ప్రదేశ్", "himachal"],
+  "Jharkhand": ["jharkhand", "झारखंड", "జార్ఖండ్"],
+  "Karnataka": ["karnataka", "कर्नाटक", "కర్ణాటక"],
+  "Kerala": ["kerala", "केरल", "కేరళ"],
+  "Madhya Pradesh": ["madhya pradesh", "मध्य प्रदेश", "మధ్యప్రదేశ్", "mp", "एम पी"],
+  "Maharashtra": ["maharashtra", "महाराष्ट्र", "మహారాష్ట్ర"],
+  "Manipur": ["manipur", "मणिपुर", "మణిపూర్"],
+  "Meghalaya": ["meghalaya", "मेघालय", "మేఘాలయ"],
+  "Mizoram": ["mizoram", "मिजोरम", "మిజోరం"],
+  "Nagaland": ["nagaland", "नागालैंड", "నాగాలాండ్"],
+  "Odisha": ["odisha", "ओडिशा", "ఒడిశా", "orissa", "उड़ीसा"],
+  "Punjab": ["punjab", "पंजाब", "పంజాబ్"],
+  "Rajasthan": ["rajasthan", "राजस्थान", "రాజస్థాన్"],
+  "Sikkim": ["sikkim", "सिक्किम", "సిక్కిం"],
+  "Tamil Nadu": ["tamil nadu", "तमिलनाडु", "తమిళనాడు", "tamilnadu"],
+  "Telangana": ["telangana", "तेलंगाना", "తెలంగాణ"],
+  "Tripura": ["tripura", "त्रिपुरा", "త్రిపుర"],
+  "Uttar Pradesh": ["uttar pradesh", "उत्तर प्रदेश", "ఉత్తర ప్రదేశ్", "up", "यूपी"],
+  "Uttarakhand": ["uttarakhand", "उत्तराखंड", "ఉత్తరాఖండ్"],
+  "West Bengal": ["west bengal", "पश्चिम बंगाल", "పశ్చిమ బెంగాల్", "bengal", "बंगाल"],
+  "Andaman and Nicobar Islands": ["andaman and nicobar", "अंडमान और निकोबार", "అండమాన్ మరియు నికోబార్"],
+  "Chandigarh": ["chandigarh", "चंडीगढ़", "చండీగఢ్"],
+  "Dadra and Nagar Haveli and Daman and Diu": ["daman and diu", "dadra and nagar haveli", "दमन और दीव", "దాద్రా నగర్ హవేలీ"],
+  "Delhi": ["delhi", "दिल्ली", "ఢిల్లీ"],
+  "Jammu and Kashmir": ["jammu and kashmir", "जम्मू और कश्मीर", "జమ్మూ మరియు కాశ్మీర్", "kashmir", "कश्मीर"],
+  "Ladakh": ["ladakh", "लद्दाख", "లడఖ్"],
+  "Lakshadweep": ["lakshadweep", "लक्षद्वीप", "లక్షద్వీప్"],
+  "Puducherry": ["puducherry", "पुडुचेरी", "పుదుచ్చేరి", "pondicherry"]
+};
+
+// Mappings for Categories in English, Hindi, Telugu, and Devanagari/Telugu scripts
+const CATEGORY_MAP: Record<string, string[]> = {
+  "General": ["general", "सामान्य", "జనరల్", "unreserved", "अनारक्षित", "ओपन", "ఓపెన్"],
+  "OBC": ["obc", "ओबीसी", "ఓబీసీ", "other backward class", "अन्य पिछड़ा वर्ग", "వెనుకబడిన తరగతి"],
+  "SC": ["sc", "एससी", "ఎస్సీ", "scheduled caste", "अनुसूचित जाति", "షెడ్యూల్డ్ కులాలు"],
+  "ST": ["st", "एसटी", "ఎస్టీ", "scheduled tribe", "अनुसूचित जनजाति", "షెడ్యూల్డ్ తెగలు"],
+  "EBC": ["ebc", "ईबीसी", "ఈబీసీ", "economically backward class", "आर्थिक रूप से पिछड़ा वर्ग"],
+  "DNT": ["dnt", "डीएनटी", "డీఎన్‌టీ", "denotified tribe", "विमुक्त जनजाति"]
+};
 
 export function parseSpeechToFormData(text: string, currentData: UserFormData): UserFormData {
   const updates: Partial<UserFormData> = {};
-  const lowerText = text.toLowerCase();
+  const lowerText = text.toLowerCase().trim();
 
   // 1. Extract Age
-  // Pattern: "age 25", "25 years", "25 saal", "25 varsh", or isolated numbers
-  const ageMatch = lowerText.match(/(?:age|aage|umar|వయస్సు|సాళ్ళు|సాల్|वर्ष|साल)?\s*(\d{1,3})\s*(?:years|yr|yrs|saal|varsh|వయస్సు|సంవత్సరాలు)?/i);
+  const ageMatch = lowerText.match(/(?:age|aage|umar|उम्र|आयु|వయస్సు|సాళ్ళు|సాల్|वर्ष|साल)?\s*(\d{1,3})\s*(?:years|yr|yrs|saal|varsh|वर्ष|साल|వయస్సు|సంవత్సరాలు)?/i);
   if (ageMatch && ageMatch[1]) {
     const num = parseInt(ageMatch[1], 10);
     if (num > 0 && num <= 120) {
@@ -16,7 +64,6 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
   }
 
   // 2. Extract Income
-  // Patterns with numbers followed by/preceded by income keywords, lakh, thousand, etc.
   let incomeVal: number | null = null;
   const lakhMatch = lowerText.match(/(\d+(?:\.\d+)?)\s*(?:lakh|lakhs|lac|lacs|लाख|లక్ష|లక్షలు)/i);
   if (lakhMatch) {
@@ -36,38 +83,101 @@ export function parseSpeechToFormData(text: string, currentData: UserFormData): 
     updates.income = incomeVal.toString();
   }
 
-  // 3. Extract State
-  for (const st of INDIAN_STATES) {
-    if (lowerText.includes(st.toLowerCase())) {
-      updates.state = st;
-      break;
+  // 3. Extract State (Multilingual)
+  for (const [officialState, variants] of Object.entries(STATE_MAP)) {
+    for (const variant of variants) {
+      if (lowerText.includes(variant)) {
+        updates.state = officialState;
+        break;
+      }
     }
+    if (updates.state) break;
   }
 
-  // 4. Extract Category
-  for (const cat of CATEGORIES) {
-    if (lowerText.includes(cat.toLowerCase())) {
-      updates.category = cat;
-      break;
+  // 4. Extract Category (Multilingual)
+  for (const [officialCategory, variants] of Object.entries(CATEGORY_MAP)) {
+    for (const variant of variants) {
+      if (lowerText.includes(variant)) {
+        updates.category = officialCategory;
+        break;
+      }
     }
+    if (updates.category) break;
   }
 
-  // 5. Extract Education Level
-  if (lowerText.includes('below 10') || lowerText.includes('10th fail')) {
+  // 5. Extract Education Level (Multilingual)
+  if (
+    lowerText.includes('below 10') ||
+    lowerText.includes('10th fail') ||
+    lowerText.includes('दसवीं से कम') ||
+    lowerText.includes('10వ తరగతి కంటే తక్కువ')
+  ) {
     updates.educationLevel = 'Below 10th';
-  } else if (lowerText.includes('10th') || lowerText.includes('ssc') || lowerText.includes('10 pass') || lowerText.includes('मैट्रिक')) {
+  } else if (
+    lowerText.includes('10th') ||
+    lowerText.includes('ssc') ||
+    lowerText.includes('10 pass') ||
+    lowerText.includes('मैट्रिक') ||
+    lowerText.includes('दसवीं') ||
+    lowerText.includes('10వ తరగతి')
+  ) {
     updates.educationLevel = '10th Pass (SSC)';
-  } else if (lowerText.includes('12th') || lowerText.includes('hsc') || lowerText.includes('inter') || lowerText.includes('12 pass') || lowerText.includes('इंटर')) {
+  } else if (
+    lowerText.includes('12th') ||
+    lowerText.includes('hsc') ||
+    lowerText.includes('inter') ||
+    lowerText.includes('12 pass') ||
+    lowerText.includes('इंटर') ||
+    lowerText.includes('बारहवीं') ||
+    lowerText.includes('12వ తరగతి') ||
+    lowerText.includes('ఇంటర్')
+  ) {
     updates.educationLevel = '12th Pass (HSC)';
-  } else if (lowerText.includes('diploma') || lowerText.includes('डिप्लोमा')) {
+  } else if (
+    lowerText.includes('diploma') ||
+    lowerText.includes('डिप्लोमा') ||
+    lowerText.includes('డిప్లొమా')
+  ) {
     updates.educationLevel = 'Diploma';
-  } else if (lowerText.includes('graduate') || lowerText.includes('bachelor') || lowerText.includes('degree') || lowerText.includes('b.tech') || lowerText.includes('b.sc') || lowerText.includes('b.com') || lowerText.includes('b.a') || lowerText.includes('డిగ్రీ')) {
+  } else if (
+    lowerText.includes('graduate') ||
+    lowerText.includes('bachelor') ||
+    lowerText.includes('degree') ||
+    lowerText.includes('b.tech') ||
+    lowerText.includes('b.sc') ||
+    lowerText.includes('b.com') ||
+    lowerText.includes('b.a') ||
+    lowerText.includes('स्नातक') ||
+    lowerText.includes('డిగ్రీ') ||
+    lowerText.includes('గ్రాడ్యుయేట్')
+  ) {
     updates.educationLevel = "Graduate / Bachelor's Degree";
-  } else if (lowerText.includes('postgraduate') || lowerText.includes('master') || lowerText.includes('m.tech') || lowerText.includes('m.sc') || lowerText.includes('m.com') || lowerText.includes('m.a') || lowerText.includes('पीजी')) {
+  } else if (
+    lowerText.includes('postgraduate') ||
+    lowerText.includes('master') ||
+    lowerText.includes('m.tech') ||
+    lowerText.includes('m.sc') ||
+    lowerText.includes('m.com') ||
+    lowerText.includes('m.a') ||
+    lowerText.includes('पीजी') ||
+    lowerText.includes('परास्नातक') ||
+    lowerText.includes('పోస్ట్ గ్రాడ్యుయేట్')
+  ) {
     updates.educationLevel = "Postgraduate / Master's Degree";
-  } else if (lowerText.includes('doctorate') || lowerText.includes('phd') || lowerText.includes('ph.d')) {
+  } else if (
+    lowerText.includes('doctorate') ||
+    lowerText.includes('phd') ||
+    lowerText.includes('ph.d') ||
+    lowerText.includes('विद्यावाचस्पति') ||
+    lowerText.includes('పిహెచ్‌డి')
+  ) {
     updates.educationLevel = 'Doctorate / Ph.D.';
-  } else if (lowerText.includes('vocational') || lowerText.includes('iti')) {
+  } else if (
+    lowerText.includes('vocational') ||
+    lowerText.includes('iti') ||
+    lowerText.includes('व्यवसायिक') ||
+    lowerText.includes('ఐటిఐ')
+  ) {
     updates.educationLevel = 'Other / Vocational Training';
   }
 
