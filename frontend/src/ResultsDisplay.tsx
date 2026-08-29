@@ -27,8 +27,16 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
   const [checklistError, setChecklistError] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
 
   const t = TRANSLATIONS[lang];
+
+  const toggleCardDetails = (schemeId: string) => {
+    setExpandedCards((prev) => ({
+      ...prev,
+      [schemeId]: !prev[schemeId],
+    }));
+  };
 
   // Helper to translate scheme objects for display
   const translatedEligible = eligible.map((scheme) => ({
@@ -50,7 +58,6 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
   const buildSpeechText = () => {
     let textParts: string[] = [];
 
-    // Summary Header
     if (translatedEligible.length > 0) {
       if (lang === 'hi') {
         textParts.push(`आप ${translatedEligible.length} योजनाओं के लिए पात्र हैं।`);
@@ -60,7 +67,6 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
         textParts.push(`You are eligible for ${translatedEligible.length} scheme${translatedEligible.length > 1 ? 's' : ''}.`);
       }
 
-      // Loop through each eligible scheme and read name + first reason
       translatedEligible.forEach((scheme, index) => {
         const firstReason = scheme.reasons[0] || '';
         textParts.push(`${index + 1}. ${scheme.name}। ${firstReason}`);
@@ -84,7 +90,6 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
         textParts.push(`There are ${translatedNearMisses.length} near-miss scheme${translatedNearMisses.length > 1 ? 's' : ''}.`);
       }
 
-      // Loop through each near-miss scheme and read name + gap explanation
       translatedNearMisses.forEach((scheme, index) => {
         const gap = scheme.nearMissReason || scheme.reasons[0] || '';
         textParts.push(`${index + 1}. ${scheme.name}। ${gap}`);
@@ -213,85 +218,124 @@ export default function ResultsDisplay({ lang, eligible, nearMisses }: ResultsDi
         </div>
       )}
 
-      {/* Eligible Schemes (Green) */}
+      {/* Eligible Schemes (Prominent Green Cards with Checkmarks) */}
       {translatedEligible.length > 0 && (
         <div className="results-section">
           <h3 className="section-heading eligible-heading">
             🟢 Eligible Schemes ({translatedEligible.length})
           </h3>
           <div className="cards-grid">
-            {translatedEligible.map((scheme) => (
-              <div key={scheme.id} className="scheme-card eligible-card">
-                <div className="scheme-header">
-                  <h4>{scheme.name}</h4>
-                  <span className="badge eligible-badge">Eligible</span>
-                </div>
-                <p className="scheme-description">{scheme.description}</p>
-                
-                <div className="reasons-block">
-                  <strong>Why you qualify:</strong>
-                  <ul>
-                    {scheme.reasons.map((r, i) => (
-                      <li key={i}>{r}</li>
-                    ))}
-                  </ul>
-                </div>
+            {translatedEligible.map((scheme) => {
+              const isExpanded = !!expandedCards[scheme.id];
+              return (
+                <div key={scheme.id} className="scheme-card eligible-card">
+                  <div className="scheme-header">
+                    <h4 title={scheme.name}>
+                      <span className="eligible-check-icon">✅</span> {scheme.name}
+                    </h4>
+                    <span className="badge eligible-badge">Eligible</span>
+                  </div>
+                  <p className="scheme-description">{scheme.description}</p>
 
-                <button
-                  type="button"
-                  className="checklist-btn"
-                  onClick={() => handleFetchChecklist(scheme.id)}
-                  disabled={loadingSchemeId === scheme.id}
-                >
-                  {loadingSchemeId === scheme.id ? 'Loading...' : '📋 View checklist'}
-                </button>
-              </div>
-            ))}
+                  {/* Toggle button for details */}
+                  <button
+                    type="button"
+                    className="toggle-details-btn"
+                    onClick={() => toggleCardDetails(scheme.id)}
+                  >
+                    {isExpanded ? t.hideDetails : t.showDetails}
+                  </button>
+
+                  {/* Collapsible Criteria evaluation list */}
+                  {isExpanded && (
+                    <div className="reasons-block">
+                      <strong>Why you qualify:</strong>
+                      <ul>
+                        {scheme.reasons.map((r, i) => (
+                          <li key={i}>{r}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="card-actions-bar">
+                    <button
+                      type="button"
+                      className="checklist-btn"
+                      onClick={() => handleFetchChecklist(scheme.id)}
+                      disabled={loadingSchemeId === scheme.id}
+                    >
+                      {loadingSchemeId === scheme.id ? 'Loading...' : '📋 View checklist'}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
 
-      {/* Near Misses (Yellow) */}
+      {/* Near Misses (Yellow Cards) */}
       {translatedNearMisses.length > 0 && (
         <div className="results-section">
           <h3 className="section-heading nearmiss-heading">
             🟡 Near-Miss Schemes ({translatedNearMisses.length})
           </h3>
           <div className="cards-grid">
-            {translatedNearMisses.map((scheme) => (
-              <div key={scheme.id} className="scheme-card nearmiss-card">
-                <div className="scheme-header">
-                  <h4>{scheme.name}</h4>
-                  <span className="badge nearmiss-badge">Near Miss</span>
-                </div>
-                <p className="scheme-description">{scheme.description}</p>
-
-                {scheme.nearMissReason && (
-                  <div className="gap-reason-box">
-                    <strong>Gap Explanation:</strong>
-                    <p>{scheme.nearMissReason}</p>
+            {translatedNearMisses.map((scheme) => {
+              const isExpanded = !!expandedCards[scheme.id];
+              return (
+                <div key={scheme.id} className="scheme-card nearmiss-card">
+                  <div className="scheme-header">
+                    <h4 title={scheme.name}>
+                      <span className="nearmiss-icon">⚠️</span> {scheme.name}
+                    </h4>
+                    <span className="badge nearmiss-badge">Near Miss</span>
                   </div>
-                )}
+                  <p className="scheme-description">{scheme.description}</p>
 
-                <div className="reasons-block">
-                  <strong>Criteria evaluation:</strong>
-                  <ul>
-                    {scheme.reasons.map((r, i) => (
-                      <li key={i}>{r}</li>
-                    ))}
-                  </ul>
+                  {/* Always visible Gap Explanation */}
+                  {scheme.nearMissReason && (
+                    <div className="gap-reason-box">
+                      <strong>Gap Explanation:</strong>
+                      <p>{scheme.nearMissReason}</p>
+                    </div>
+                  )}
+
+                  {/* Toggle button for details */}
+                  <button
+                    type="button"
+                    className="toggle-details-btn"
+                    onClick={() => toggleCardDetails(scheme.id)}
+                  >
+                    {isExpanded ? t.hideDetails : t.showDetails}
+                  </button>
+
+                  {/* Collapsible Criteria evaluation list */}
+                  {isExpanded && (
+                    <div className="reasons-block">
+                      <strong>Criteria evaluation:</strong>
+                      <ul>
+                        {scheme.reasons.map((r, i) => (
+                          <li key={i}>{r}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="card-actions-bar">
+                    <button
+                      type="button"
+                      className="checklist-btn"
+                      onClick={() => handleFetchChecklist(scheme.id)}
+                      disabled={loadingSchemeId === scheme.id}
+                    >
+                      {loadingSchemeId === scheme.id ? 'Loading...' : '📋 View checklist'}
+                    </button>
+                  </div>
                 </div>
-
-                <button
-                  type="button"
-                  className="checklist-btn"
-                  onClick={() => handleFetchChecklist(scheme.id)}
-                  disabled={loadingSchemeId === scheme.id}
-                >
-                  {loadingSchemeId === scheme.id ? 'Loading...' : '📋 View checklist'}
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
