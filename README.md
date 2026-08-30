@@ -156,7 +156,3 @@ This project was developed iteratively with **LatentCode**—an interactive CLI 
 - Designing responsive UI components and verifying TypeScript builds across iterative updates.
 
 ---
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
