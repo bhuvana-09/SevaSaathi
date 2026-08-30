@@ -19,16 +19,12 @@ export interface ResultsDisplayProps {
     nearMissReason?: string | null;
     reasons: string[];
   }>;
-  onChecklistStateChange?: (isOpen: boolean) => void;
-  triggerOpenChecklist?: boolean;
 }
 
 export default function ResultsDisplay({
   lang,
   eligible,
   nearMisses,
-  onChecklistStateChange,
-  triggerOpenChecklist,
 }: ResultsDisplayProps) {
   const [selectedChecklist, setSelectedChecklist] = useState<ChecklistResponse | null>(null);
   const [loadingSchemeId, setLoadingSchemeId] = useState<string | null>(null);
@@ -130,16 +126,6 @@ export default function ResultsDisplay({
     setIsSpeaking(false);
   }, [lang]);
 
-  // If Step 3 in stepper is clicked externally, open top scheme's checklist
-  useEffect(() => {
-    if (triggerOpenChecklist && !selectedChecklist) {
-      const firstScheme = eligible[0] || nearMisses[0];
-      if (firstScheme) {
-        handleFetchChecklist(firstScheme.id);
-      }
-    }
-  }, [triggerOpenChecklist]);
-
   const handleStartSpeakResults = () => {
     const speechContent = buildSpeechText();
     executeSpeech(speechContent);
@@ -156,10 +142,6 @@ export default function ResultsDisplay({
       setChecklistError(null);
       const data = await getChecklist(schemeId);
       setSelectedChecklist(data);
-
-      if (onChecklistStateChange) {
-        onChecklistStateChange(true);
-      }
 
       const translatedSchemeName = translateText(data.schemeName, lang);
       const docListStr = data.checklist.map((doc) => translateText(doc.document, lang)).join(', ');
@@ -190,15 +172,12 @@ export default function ResultsDisplay({
     setIsSpeaking(false);
     setSelectedChecklist(null);
     setChecklistError(null);
-    if (onChecklistStateChange) {
-      onChecklistStateChange(false);
-    }
   };
 
   return (
     <div className="results-container" id="results-section">
       <div className="results-header-bar">
-        <h2 className="results-title">Scheme Matching Results</h2>
+        <h2 className="results-title">{t.resultsTitle}</h2>
         <div className="audio-controls-group">
           <button
             type="button"
@@ -247,7 +226,7 @@ export default function ResultsDisplay({
       {translatedEligible.length > 0 && (
         <div className="results-section">
           <h3 className="section-heading eligible-heading">
-            🟢 Eligible Schemes ({translatedEligible.length})
+            {t.eligibleSchemesHeading} ({translatedEligible.length})
           </h3>
           <div className="cards-grid">
             {translatedEligible.map((scheme) => {
@@ -258,7 +237,7 @@ export default function ResultsDisplay({
                     <h4 title={scheme.name}>
                       <span className="eligible-check-icon">✅</span> {scheme.name}
                     </h4>
-                    <span className="badge eligible-badge">Eligible</span>
+                    <span className="badge eligible-badge">{t.eligibleBadge}</span>
                   </div>
                   <p className="scheme-description">{scheme.description}</p>
 
@@ -274,7 +253,7 @@ export default function ResultsDisplay({
                   {/* Collapsible Criteria evaluation list */}
                   {isExpanded && (
                     <div className="reasons-block">
-                      <strong>Why you qualify:</strong>
+                      <strong>{t.whyQualify}</strong>
                       <ul>
                         {scheme.reasons.map((r, i) => (
                           <li key={i}>{r}</li>
@@ -290,7 +269,7 @@ export default function ResultsDisplay({
                       onClick={() => handleFetchChecklist(scheme.id)}
                       disabled={loadingSchemeId === scheme.id}
                     >
-                      {loadingSchemeId === scheme.id ? 'Loading...' : '📋 View checklist'}
+                      {loadingSchemeId === scheme.id ? t.loading : t.viewChecklist}
                     </button>
                   </div>
                 </div>
@@ -304,7 +283,7 @@ export default function ResultsDisplay({
       {translatedNearMisses.length > 0 && (
         <div className="results-section">
           <h3 className="section-heading nearmiss-heading">
-            🟡 Near-Miss Schemes ({translatedNearMisses.length})
+            {t.nearMissSchemesHeading} ({translatedNearMisses.length})
           </h3>
           <div className="cards-grid">
             {translatedNearMisses.map((scheme) => {
@@ -315,14 +294,14 @@ export default function ResultsDisplay({
                     <h4 title={scheme.name}>
                       <span className="nearmiss-icon">⚠️</span> {scheme.name}
                     </h4>
-                    <span className="badge nearmiss-badge">Near Miss</span>
+                    <span className="badge nearmiss-badge">{t.nearMissBadge}</span>
                   </div>
                   <p className="scheme-description">{scheme.description}</p>
 
                   {/* Always visible Gap Explanation */}
                   {scheme.nearMissReason && (
                     <div className="gap-reason-box">
-                      <strong>Gap Explanation:</strong>
+                      <strong>{t.gapExplanation}</strong>
                       <p>{scheme.nearMissReason}</p>
                     </div>
                   )}
@@ -339,7 +318,7 @@ export default function ResultsDisplay({
                   {/* Collapsible Criteria evaluation list */}
                   {isExpanded && (
                     <div className="reasons-block">
-                      <strong>Criteria evaluation:</strong>
+                      <strong>{t.criteriaEvaluation}</strong>
                       <ul>
                         {scheme.reasons.map((r, i) => (
                           <li key={i}>{r}</li>
@@ -355,7 +334,7 @@ export default function ResultsDisplay({
                       onClick={() => handleFetchChecklist(scheme.id)}
                       disabled={loadingSchemeId === scheme.id}
                     >
-                      {loadingSchemeId === scheme.id ? 'Loading...' : '📋 View checklist'}
+                      {loadingSchemeId === scheme.id ? t.loading : t.viewChecklist}
                     </button>
                   </div>
                 </div>

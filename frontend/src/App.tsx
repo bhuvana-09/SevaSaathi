@@ -12,7 +12,7 @@ function App() {
       <header className="app-header">
         <div className="header-brand">
           <span className="brand-icon">🏛️</span>
-          <h1>SevaSaathi</h1>
+          <h1>{t.brandTitle}</h1>
         </div>
         <p className="app-tagline">{t.tagline}</p>
       </header>

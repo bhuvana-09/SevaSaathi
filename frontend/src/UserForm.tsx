@@ -71,8 +71,6 @@ export default function UserForm({ lang, setLang }: UserFormProps) {
   const [matchResults, setMatchResults] = useState<MatchResponse | null>(null);
 
   const [currentStep, setCurrentStep] = useState<StepState>(1);
-  const [isChecklistOpen, setIsChecklistOpen] = useState<boolean>(false);
-  const [triggerOpenChecklist, setTriggerOpenChecklist] = useState<boolean>(false);
 
   const [isListening, setIsListening] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
@@ -80,6 +78,18 @@ export default function UserForm({ lang, setLang }: UserFormProps) {
 
   const activeRecognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const t = TRANSLATIONS[lang];
+
+  // Auto-scroll to Scheme Matching Results when results arrive after submit
+  useEffect(() => {
+    if (matchResults) {
+      setTimeout(() => {
+        const el = document.getElementById('results-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [matchResults]);
 
   // Stop recognition if component unmounts
   useEffect(() => {
@@ -190,12 +200,6 @@ export default function UserForm({ lang, setLang }: UserFormProps) {
         const el = document.getElementById('results-section');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }
-    } else if (step === 3) {
-      if (matchResults) {
-        setTriggerOpenChecklist(true);
-        // Reset trigger flag on next tick
-        setTimeout(() => setTriggerOpenChecklist(false), 200);
-      }
     }
   };
 
@@ -236,7 +240,6 @@ export default function UserForm({ lang, setLang }: UserFormProps) {
       <StepIndicator
         lang={lang}
         currentStep={currentStep}
-        isChecklistOpen={isChecklistOpen}
         hasResults={!!matchResults}
         onStepClick={handleStepClick}
       />
@@ -409,8 +412,6 @@ export default function UserForm({ lang, setLang }: UserFormProps) {
           lang={lang}
           eligible={matchResults.eligible}
           nearMisses={matchResults.nearMisses}
-          onChecklistStateChange={(isOpen) => setIsChecklistOpen(isOpen)}
-          triggerOpenChecklist={triggerOpenChecklist}
         />
       )}
     </div>

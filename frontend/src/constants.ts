@@ -29,6 +29,7 @@ export interface Translations {
   howToObtain: string;
   showDetails: string;
   hideDetails: string;
+  brandTitle: string;
   tagline: string;
   aboutTitle: string;
   aboutDesc1: string;
@@ -45,6 +46,16 @@ export interface Translations {
   stepDetails: string;
   stepResults: string;
   stepChecklist: string;
+  viewChecklist: string;
+  loading: string;
+  gapExplanation: string;
+  nearMissBadge: string;
+  eligibleBadge: string;
+  whyQualify: string;
+  criteriaEvaluation: string;
+  resultsTitle: string;
+  eligibleSchemesHeading: string;
+  nearMissSchemesHeading: string;
 }
 
 export const TRANSLATIONS: Record<Language, Translations> = {
@@ -77,6 +88,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     howToObtain: "How to obtain:",
     showDetails: "Show details 🔽",
     hideDetails: "Hide details 🔼",
+    brandTitle: "SevaSaathi",
     tagline: "Empowering citizens to discover government schemes & welfare benefits easily",
     aboutTitle: "About SevaSaathi",
     aboutDesc1: "SevaSaathi empowers citizens across India to easily discover government scholarships and welfare benefits tailored to their eligibility profile.",
@@ -92,7 +104,17 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     checklistHeading: "Checklist",
     stepDetails: "Details",
     stepResults: "Results",
-    stepChecklist: "Checklist"
+    stepChecklist: "Checklist",
+    viewChecklist: "📋 View checklist",
+    loading: "Loading...",
+    gapExplanation: "Gap Explanation:",
+    nearMissBadge: "Near Miss",
+    eligibleBadge: "Eligible",
+    whyQualify: "Why you qualify:",
+    criteriaEvaluation: "Criteria evaluation:",
+    resultsTitle: "Scheme Matching Results",
+    eligibleSchemesHeading: "🟢 Eligible Schemes",
+    nearMissSchemesHeading: "🟡 Near-Miss Schemes"
   },
   hi: {
     title: "उपयोगकर्ता जानकारी",
@@ -123,6 +145,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     howToObtain: "कैसे प्राप्त करें:",
     showDetails: "विवरण देखें 🔽",
     hideDetails: "विवरण छिपाएं 🔼",
+    brandTitle: "सेवासाथी",
     tagline: "नागरिकों को सरकारी योजनाओं और कल्याणकारी लाभों को आसानी से खोजने में सक्षम बनाना",
     aboutTitle: "सेवासाथी के बारे में",
     aboutDesc1: "सेवासाथी पूरे भारत में नागरिकों को उनकी पात्रता प्रोफ़ाइल के अनुरूप सरकारी छात्रवृत्तियों और कल्याणकारी लाभों की आसानी से खोज करने में सक्षम बनाता है।",
@@ -138,7 +161,17 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     checklistHeading: "चेकलिस्ट",
     stepDetails: "विवरण",
     stepResults: "परिणाम",
-    stepChecklist: "चेकलिस्ट"
+    stepChecklist: "चेकलिस्ट",
+    viewChecklist: "📋 चेकलिस्ट देखें",
+    loading: "लोड हो रहा है...",
+    gapExplanation: "अंतर स्पष्टीकरण:",
+    nearMissBadge: "निकट-चूक",
+    eligibleBadge: "पात्र",
+    whyQualify: "आप क्यों पात्र हैं:",
+    criteriaEvaluation: "पात्रता मापदंड मूल्यांकन:",
+    resultsTitle: "योजना मिलान परिणाम",
+    eligibleSchemesHeading: "🟢 पात्र योजनाएं",
+    nearMissSchemesHeading: "🟡 निकट-चूक योजनाएं"
   },
   te: {
     title: "వినియోగదారు సమాచారం",
@@ -169,6 +202,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     howToObtain: "ఎలా పొందాలి:",
     showDetails: "వివరాలు చూడండి 🔽",
     hideDetails: "వివరాలు దాచండి 🔼",
+    brandTitle: "సేవాసాథీ",
     tagline: "ప్రభుత్వ పథకాలు మరియు సంక్షేమ లబ్ధిని పౌరులు సులభంగా కనుగొనేలా సాధికారత కల్పించడం",
     aboutTitle: "సేవాసాథీ గురించి",
     aboutDesc1: "సేవాసాథీ భారతదేశం అంతటా పౌరులు తమ అర్హతకు తగిన ప్రభుత్వ స్కాలర్‌షిప్‌లు మరియు సంక్షేమ లబ్ధిని సులభంగా కనుగొనేలా చేస్తుంది.",
@@ -184,7 +218,17 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     checklistHeading: "చెక్‌లిస్ట్",
     stepDetails: "వివరాలు",
     stepResults: "ఫలితాలు",
-    stepChecklist: "చెక్‌లిస్ట్"
+    stepChecklist: "చెక్‌లిస్ట్",
+    viewChecklist: "📋 చెక్‌లిస్ట్ చూడండి",
+    loading: "లోడ్ అవుతోంది...",
+    gapExplanation: "వ్యత్యాస వివరణ:",
+    nearMissBadge: "దాదాపు అర్హత",
+    eligibleBadge: "అర్హతగల",
+    whyQualify: "మీరు ఎందుకు అర్హులు:",
+    criteriaEvaluation: "అర్హతా ప్రమాణాల మూల్యాంకనం:",
+    resultsTitle: "పథకాల సరిపోలిక ఫలితాలు",
+    eligibleSchemesHeading: "🟢 అర్హత ఉన్న పథకాలు",
+    nearMissSchemesHeading: "🟡 దాదాపు అర్హత ఉన్న పథకాలు"
   }
 };
 
