@@ -51,8 +51,12 @@ declare global {
   }
 }
 
-export default function UserForm() {
-  const [lang, setLang] = useState<Language>('en');
+interface UserFormProps {
+  lang: Language;
+  setLang: (l: Language) => void;
+}
+
+export default function UserForm({ lang, setLang }: UserFormProps) {
   const [formData, setFormData] = useState<UserFormData>({
     age: '',
     state: '',
@@ -68,6 +72,7 @@ export default function UserForm() {
 
   const [currentStep, setCurrentStep] = useState<StepState>(1);
   const [isChecklistOpen, setIsChecklistOpen] = useState<boolean>(false);
+  const [triggerOpenChecklist, setTriggerOpenChecklist] = useState<boolean>(false);
 
   const [isListening, setIsListening] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
@@ -176,6 +181,24 @@ export default function UserForm() {
     }));
   };
 
+  const handleStepClick = (step: StepState) => {
+    if (step === 1) {
+      const el = document.getElementById('user-form-card');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (step === 2) {
+      if (matchResults) {
+        const el = document.getElementById('results-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (step === 3) {
+      if (matchResults) {
+        setTriggerOpenChecklist(true);
+        // Reset trigger flag on next tick
+        setTimeout(() => setTriggerOpenChecklist(false), 200);
+      }
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -209,13 +232,16 @@ export default function UserForm() {
 
   return (
     <div className="main-wrapper">
+      {/* Top Stepper Indicator */}
       <StepIndicator
+        lang={lang}
         currentStep={currentStep}
         isChecklistOpen={isChecklistOpen}
         hasResults={!!matchResults}
+        onStepClick={handleStepClick}
       />
 
-      <div className="form-card">
+      <div className="form-card" id="user-form-card">
         <div className="top-bar">
           <div className="lang-selector">
             <label htmlFor="language">{t.selectLanguage}:</label>
@@ -384,6 +410,7 @@ export default function UserForm() {
           eligible={matchResults.eligible}
           nearMisses={matchResults.nearMisses}
           onChecklistStateChange={(isOpen) => setIsChecklistOpen(isOpen)}
+          triggerOpenChecklist={triggerOpenChecklist}
         />
       )}
     </div>

@@ -1,15 +1,26 @@
+import { Language, TRANSLATIONS } from './constants';
+
 export type StepState = 1 | 2 | 3; // 1: Details, 2: Results, 3: Checklist
 
 interface StepIndicatorProps {
+  lang: Language;
   currentStep: StepState;
   isChecklistOpen?: boolean;
   hasResults?: boolean;
+  onStepClick?: (step: StepState) => void;
 }
 
 type StepStatus = 'current' | 'completed' | 'upcoming';
 
-export default function StepIndicator({ currentStep, isChecklistOpen, hasResults }: StepIndicatorProps) {
-  // Determine status for each of the 3 steps
+export default function StepIndicator({
+  lang,
+  currentStep,
+  isChecklistOpen,
+  hasResults,
+  onStepClick,
+}: StepIndicatorProps) {
+  const t = TRANSLATIONS[lang];
+
   let step1Status: StepStatus = 'current';
   let step2Status: StepStatus = 'upcoming';
   let step3Status: StepStatus = 'upcoming';
@@ -28,11 +39,21 @@ export default function StepIndicator({ currentStep, isChecklistOpen, hasResults
     step3Status = 'upcoming';
   }
 
+  const handleStepClick = (step: StepState) => {
+    if (onStepClick) {
+      onStepClick(step);
+    }
+  };
+
   return (
     <div className="step-indicator-container">
       <div className="step-indicator">
         {/* Step 1 */}
-        <div className={`step-item ${step1Status}`}>
+        <div
+          className={`step-item ${step1Status}`}
+          onClick={() => handleStepClick(1)}
+          title="Go to Details Form"
+        >
           <div className="step-circle">
             {step1Status === 'completed' ? (
               <span className="check-icon">✓</span>
@@ -40,14 +61,18 @@ export default function StepIndicator({ currentStep, isChecklistOpen, hasResults
               <span>1</span>
             )}
           </div>
-          <span className="step-label">Details</span>
+          <span className="step-label">{t.stepDetails}</span>
         </div>
 
         {/* Line 1 -> 2 */}
         <div className={`step-line ${step1Status === 'completed' ? 'filled' : ''}`} />
 
         {/* Step 2 */}
-        <div className={`step-item ${step2Status}`}>
+        <div
+          className={`step-item ${step2Status}`}
+          onClick={() => handleStepClick(2)}
+          title="Go to Scheme Results"
+        >
           <div className="step-circle">
             {step2Status === 'completed' ? (
               <span className="check-icon">✓</span>
@@ -55,22 +80,26 @@ export default function StepIndicator({ currentStep, isChecklistOpen, hasResults
               <span>2</span>
             )}
           </div>
-          <span className="step-label">Results</span>
+          <span className="step-label">{t.stepResults}</span>
         </div>
 
         {/* Line 2 -> 3 */}
         <div className={`step-line ${step2Status === 'completed' ? 'filled' : ''}`} />
 
         {/* Step 3 */}
-        <div className={`step-item ${step3Status}`}>
+        <div
+          className={`step-item ${step3Status}`}
+          onClick={() => handleStepClick(3)}
+          title="Go to Document Checklist"
+        >
           <div className="step-circle">
-            {(step3Status as StepStatus) === 'completed' ? (
-              <span className="check-icon">✓</span>
+            {step3Status === 'current' ? (
+              <span>3</span>
             ) : (
               <span>3</span>
             )}
           </div>
-          <span className="step-label">Checklist</span>
+          <span className="step-label">{t.stepChecklist}</span>
         </div>
       </div>
     </div>

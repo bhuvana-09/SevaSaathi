@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import UserForm from './UserForm';
 import InfoCard from './InfoCard';
+import { Language, TRANSLATIONS } from './constants';
 
 function App() {
+  const [lang, setLang] = useState<Language>('en');
+  const t = TRANSLATIONS[lang];
+
   return (
     <div className="app-container">
       <header className="app-header">
@@ -9,15 +14,13 @@ function App() {
           <span className="brand-icon">🏛️</span>
           <h1>SevaSaathi</h1>
         </div>
-        <p className="app-tagline">
-          Empowering citizens to discover government schemes & welfare benefits easily
-        </p>
+        <p className="app-tagline">{t.tagline}</p>
       </header>
       <main className="main-content">
         <div className="layout-grid">
-          <InfoCard />
+          <InfoCard lang={lang} />
           <section className="form-results-column">
-            <UserForm />
+            <UserForm lang={lang} setLang={setLang} />
           </section>
         </div>
       </main>

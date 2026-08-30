@@ -1,7 +1,13 @@
 import { useState } from 'react';
+import { Language, TRANSLATIONS } from './constants';
 
-export default function InfoCard() {
+interface InfoCardProps {
+  lang: Language;
+}
+
+export default function InfoCard({ lang }: InfoCardProps) {
   const [isMobileExpanded, setIsMobileExpanded] = useState<boolean>(false);
+  const t = TRANSLATIONS[lang];
 
   return (
     <aside className="info-card-container">
@@ -13,26 +19,24 @@ export default function InfoCard() {
         <div className="mobile-banner-header">
           <div className="mobile-banner-title">
             <span className="info-icon">🏛️</span>
-            <strong>About SevaSaathi</strong>
+            <strong>{t.aboutTitle}</strong>
           </div>
           <span className="tap-learn-more">
-            {isMobileExpanded ? 'Tap to close ▲' : 'Tap to learn more ▼'}
+            {isMobileExpanded ? t.mobileClose : t.mobileLearnMore}
           </span>
         </div>
 
         {isMobileExpanded && (
           <div className="mobile-banner-content" onClick={(e) => e.stopPropagation()}>
-            <p>
-              SevaSaathi helps Indian citizens discover eligible government scholarships and welfare schemes in seconds based on age, income, state, category, and education level.
-            </p>
+            <p>{t.aboutDesc1}</p>
             <div className="info-checklist-box">
-              <h4>📋 Standard Required Documents:</h4>
+              <h4>📋 {t.requiredDocsHeader}:</h4>
               <ul>
-                <li>Aadhaar Card / ID Proof</li>
-                <li>Income Certificate (Tahsildar / e-District)</li>
-                <li>Category / Caste Certificate (if applicable)</li>
-                <li>Educational Marksheets & College Fee Receipts</li>
-                <li>Bank Account Details linked with Aadhaar</li>
+                <li>{t.doc1}</li>
+                <li>{t.doc2}</li>
+                <li>{t.doc3}</li>
+                <li>{t.doc4}</li>
+                <li>{t.doc5}</li>
               </ul>
             </div>
           </div>
@@ -43,23 +47,19 @@ export default function InfoCard() {
       <div className="desktop-info-card">
         <div className="info-card-header">
           <span className="info-badge-icon">🏛️</span>
-          <h3>About SevaSaathi</h3>
+          <h3>{t.aboutTitle}</h3>
         </div>
-        <p className="info-description">
-          SevaSaathi empowers citizens across India to easily discover government scholarships and welfare benefits tailored to their eligibility profile.
-        </p>
-        <p className="info-description">
-          Simply enter your profile details or use voice input to get real-time eligibility evaluation and plain-language guidance.
-        </p>
+        <p className="info-description">{t.aboutDesc1}</p>
+        <p className="info-description">{t.aboutDesc2}</p>
 
         <div className="info-checklist-box">
-          <h4>📋 Standard Required Documents</h4>
+          <h4>📋 {t.requiredDocsHeader}</h4>
           <ul>
-            <li>Aadhaar Card / Govt ID Proof</li>
-            <li>Income Certificate (Tahsildar / MeeSeva)</li>
-            <li>Caste / Social Category Certificate</li>
-            <li>Academic Transcripts & Fee Receipts</li>
-            <li>Aadhaar-seeded Bank Passbook</li>
+            <li>{t.doc1}</li>
+            <li>{t.doc2}</li>
+            <li>{t.doc3}</li>
+            <li>{t.doc4}</li>
+            <li>{t.doc5}</li>
           </ul>
         </div>
       </div>

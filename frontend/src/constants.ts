@@ -29,6 +29,22 @@ export interface Translations {
   howToObtain: string;
   showDetails: string;
   hideDetails: string;
+  tagline: string;
+  aboutTitle: string;
+  aboutDesc1: string;
+  aboutDesc2: string;
+  mobileLearnMore: string;
+  mobileClose: string;
+  requiredDocsHeader: string;
+  doc1: string;
+  doc2: string;
+  doc3: string;
+  doc4: string;
+  doc5: string;
+  checklistHeading: string;
+  stepDetails: string;
+  stepResults: string;
+  stepChecklist: string;
 }
 
 export const TRANSLATIONS: Record<Language, Translations> = {
@@ -60,7 +76,23 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     modalIntro: "Required documents and how to obtain them:",
     howToObtain: "How to obtain:",
     showDetails: "Show details 🔽",
-    hideDetails: "Hide details 🔼"
+    hideDetails: "Hide details 🔼",
+    tagline: "Empowering citizens to discover government schemes & welfare benefits easily",
+    aboutTitle: "About SevaSaathi",
+    aboutDesc1: "SevaSaathi empowers citizens across India to easily discover government scholarships and welfare benefits tailored to their eligibility profile.",
+    aboutDesc2: "Simply enter your profile details or use voice input to get real-time eligibility evaluation and plain-language guidance.",
+    mobileLearnMore: "Tap to learn more ▼",
+    mobileClose: "Tap to close ▲",
+    requiredDocsHeader: "Standard Required Documents",
+    doc1: "Aadhaar Card / Govt ID Proof",
+    doc2: "Income Certificate (Tahsildar / MeeSeva)",
+    doc3: "Caste / Social Category Certificate",
+    doc4: "Academic Transcripts & Fee Receipts",
+    doc5: "Aadhaar-seeded Bank Passbook",
+    checklistHeading: "Checklist",
+    stepDetails: "Details",
+    stepResults: "Results",
+    stepChecklist: "Checklist"
   },
   hi: {
     title: "उपयोगकर्ता जानकारी",
@@ -90,7 +122,23 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     modalIntro: "आवश्यक दस्तावेज और उन्हें कैसे प्राप्त करें:",
     howToObtain: "कैसे प्राप्त करें:",
     showDetails: "विवरण देखें 🔽",
-    hideDetails: "विवरण छिपाएं 🔼"
+    hideDetails: "विवरण छिपाएं 🔼",
+    tagline: "नागरिकों को सरकारी योजनाओं और कल्याणकारी लाभों को आसानी से खोजने में सक्षम बनाना",
+    aboutTitle: "सेवासाथी के बारे में",
+    aboutDesc1: "सेवासाथी पूरे भारत में नागरिकों को उनकी पात्रता प्रोफ़ाइल के अनुरूप सरकारी छात्रवृत्तियों और कल्याणकारी लाभों की आसानी से खोज करने में सक्षम बनाता है।",
+    aboutDesc2: "वास्तविक समय में पात्रता मूल्यांकन और सरल भाषा मार्गदर्शन प्राप्त करने के लिए बस अपना प्रोफ़ाइल विवरण दर्ज करें या वॉयस इनपुट का उपयोग करें।",
+    mobileLearnMore: "अधिक जानने के लिए टैप करें ▼",
+    mobileClose: "बंद करने के लिए टैप करें ▲",
+    requiredDocsHeader: "मानक आवश्यक दस्तावेज",
+    doc1: "आधार कार्ड / सरकारी पहचान पत्र",
+    doc2: "आय प्रमाण पत्र (तहसीलदार / ई-डिस्ट्रिक्ट)",
+    doc3: "जाति / सामाजिक श्रेणी प्रमाण पत्र",
+    doc4: "शैक्षणिक अंकतालिकाएं और शुल्क रसीदें",
+    doc5: "आधार से जुड़ी बैंक पासबुक",
+    checklistHeading: "चेकलिस्ट",
+    stepDetails: "विवरण",
+    stepResults: "परिणाम",
+    stepChecklist: "चेकलिस्ट"
   },
   te: {
     title: "వినియోగదారు సమాచారం",
@@ -120,7 +168,23 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     modalIntro: "అవసరమైన పత్రాలు మరియు వాటిని ఎలా పొందాలి:",
     howToObtain: "ఎలా పొందాలి:",
     showDetails: "వివరాలు చూడండి 🔽",
-    hideDetails: "వివరాలు దాచండి 🔼"
+    hideDetails: "వివరాలు దాచండి 🔼",
+    tagline: "ప్రభుత్వ పథకాలు మరియు సంక్షేమ లబ్ధిని పౌరులు సులభంగా కనుగొనేలా సాధికారత కల్పించడం",
+    aboutTitle: "సేవాసాథీ గురించి",
+    aboutDesc1: "సేవాసాథీ భారతదేశం అంతటా పౌరులు తమ అర్హతకు తగిన ప్రభుత్వ స్కాలర్‌షిప్‌లు మరియు సంక్షేమ లబ్ధిని సులభంగా కనుగొనేలా చేస్తుంది.",
+    aboutDesc2: "రియల్ టైమ్ అర్హత మూల్యాంకనం మరియు సులభమైన భాషా మార్గదర్శకత్వం పొందడానికి మీ ప్రొఫైల్ వివరాలను నమోదు చేయండి లేదా వాయిస్ ఇన్‌పుట్‌ని ఉపయోగించండి.",
+    mobileLearnMore: "మరింత తెలుసుకోవడానికి నొక్కండి ▼",
+    mobileClose: "మూసివేయడానికి నొక్కండి ▲",
+    requiredDocsHeader: "సాధారణ అవసరమైన పత్రాలు",
+    doc1: "ఆధార్ కార్డ్ / ప్రభుత్వ ఐడి ప్రూఫ్",
+    doc2: "ఆదాయ ధృవీకరణ పత్రం (తహశీల్దార్ / మీసేవ)",
+    doc3: "కుల / సామాజిక కేటగిరీ ధృవీకరణ పత్రం",
+    doc4: "విద్యా పత్రాలు & ఫీజు రశీదులు",
+    doc5: "ఆధార్‌తో అనుసంధానించబడిన బ్యాంక్ పాస్‌బుక్",
+    checklistHeading: "చెక్‌లిస్ట్",
+    stepDetails: "వివరాలు",
+    stepResults: "ఫలితాలు",
+    stepChecklist: "చెక్‌లిస్ట్"
   }
 };
 

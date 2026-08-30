@@ -20,9 +20,16 @@ export interface ResultsDisplayProps {
     reasons: string[];
   }>;
   onChecklistStateChange?: (isOpen: boolean) => void;
+  triggerOpenChecklist?: boolean;
 }
 
-export default function ResultsDisplay({ lang, eligible, nearMisses, onChecklistStateChange }: ResultsDisplayProps) {
+export default function ResultsDisplay({
+  lang,
+  eligible,
+  nearMisses,
+  onChecklistStateChange,
+  triggerOpenChecklist,
+}: ResultsDisplayProps) {
   const [selectedChecklist, setSelectedChecklist] = useState<ChecklistResponse | null>(null);
   const [loadingSchemeId, setLoadingSchemeId] = useState<string | null>(null);
   const [checklistError, setChecklistError] = useState<string | null>(null);
@@ -123,6 +130,16 @@ export default function ResultsDisplay({ lang, eligible, nearMisses, onChecklist
     setIsSpeaking(false);
   }, [lang]);
 
+  // If Step 3 in stepper is clicked externally, open top scheme's checklist
+  useEffect(() => {
+    if (triggerOpenChecklist && !selectedChecklist) {
+      const firstScheme = eligible[0] || nearMisses[0];
+      if (firstScheme) {
+        handleFetchChecklist(firstScheme.id);
+      }
+    }
+  }, [triggerOpenChecklist]);
+
   const handleStartSpeakResults = () => {
     const speechContent = buildSpeechText();
     executeSpeech(speechContent);
@@ -139,6 +156,7 @@ export default function ResultsDisplay({ lang, eligible, nearMisses, onChecklist
       setChecklistError(null);
       const data = await getChecklist(schemeId);
       setSelectedChecklist(data);
+
       if (onChecklistStateChange) {
         onChecklistStateChange(true);
       }
@@ -178,7 +196,7 @@ export default function ResultsDisplay({ lang, eligible, nearMisses, onChecklist
   };
 
   return (
-    <div className="results-container">
+    <div className="results-container" id="results-section">
       <div className="results-header-bar">
         <h2 className="results-title">Scheme Matching Results</h2>
         <div className="audio-controls-group">
@@ -360,7 +378,7 @@ export default function ResultsDisplay({ lang, eligible, nearMisses, onChecklist
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Checklist: {translateText(selectedChecklist.schemeName, lang)}</h3>
+              <h3>{t.checklistHeading}: {translateText(selectedChecklist.schemeName, lang)}</h3>
               <button type="button" className="close-btn" onClick={closeModal}>
                 &times;
               </button>
