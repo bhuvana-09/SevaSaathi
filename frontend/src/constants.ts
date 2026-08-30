@@ -20,6 +20,7 @@ export interface Translations {
   educationLabel: string;
   selectEducation: string;
   submitBtn: string;
+  resetBtn: string;
   submittedNotice: string;
   voiceSuccess: string;
   readAloud: string;
@@ -79,6 +80,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     educationLabel: "Education Level",
     selectEducation: "Select Education Level",
     submitBtn: "Submit",
+    resetBtn: "🔄 Reset",
     submittedNotice: "✔️ Form submitted! Check browser console for logged data.",
     voiceSuccess: "Voice input processed!",
     readAloud: "🔊 Read Aloud Results",
@@ -136,6 +138,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     educationLabel: "शिक्षा का स्तर",
     selectEducation: "शिक्षा का स्तर चुनें",
     submitBtn: "सबमिट करें",
+    resetBtn: "🔄 रिसेट करें",
     submittedNotice: "✔️ फ़ॉर्म जमा कर दिया गया! दर्ज डेटा देखने के लिए ब्राउज़र कंसोल जांचें।",
     voiceSuccess: "वॉयस इनपुट संसाधित हो गया!",
     readAloud: "🔊 परिणाम सुनकर जानें",
@@ -193,6 +196,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     educationLabel: "విద్యా అర్హత",
     selectEducation: "విద్యా అర్హతను ఎంచుకోండి",
     submitBtn: "సమర్పించండి",
+    resetBtn: "🔄 రీసెట్ చేయండి",
     submittedNotice: "✔️ ఫారమ్ సమర్పించబడింది! నమోదు చేసిన డేటా కోసం బ్రౌజర్ కన్సోల్‌ను చూడండి.",
     voiceSuccess: "వాయిస్ ఇన్‌పుట్ ప్రాసెస్ చేయబడింది!",
     readAloud: "🔊 ఫలితాలను బిగ్గరగా వినండి",

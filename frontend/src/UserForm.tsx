@@ -2,6 +2,7 @@ import { useState, ChangeEvent, FormEvent, useEffect, useRef } from 'react';
 import { INDIAN_STATES, CATEGORIES, GENDERS, EDUCATION_LEVELS, TRANSLATIONS, Language } from './constants';
 import { parseSpeechToFormData } from './speechParser';
 import { matchSchemes, MatchResponse } from './api';
+import { stopSpeech } from './speechSynthesis';
 import ResultsDisplay from './ResultsDisplay';
 import StepIndicator, { StepState } from './StepIndicator';
 
@@ -203,6 +204,28 @@ export default function UserForm({ lang, setLang }: UserFormProps) {
     }
   };
 
+  const handleReset = () => {
+    stopSpeech();
+    setFormData({
+      age: '',
+      state: '',
+      income: '',
+      category: '',
+      gender: '',
+      educationLevel: '',
+    });
+    setTranscript('');
+    setVoiceNotice('');
+    setMatchResults(null);
+    setApiError(null);
+    setCurrentStep(1);
+
+    const el = document.getElementById('user-form-card');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -389,15 +412,25 @@ export default function UserForm({ lang, setLang }: UserFormProps) {
             </select>
           </div>
 
-          <button type="submit" className="submit-btn" disabled={isLoading}>
-            {isLoading ? (
-              <span className="btn-loading-state">
-                <span className="spinner"></span> Checking Eligibility...
-              </span>
-            ) : (
-              t.submitBtn
-            )}
-          </button>
+          <div className="form-buttons-group">
+            <button type="submit" className="submit-btn" disabled={isLoading}>
+              {isLoading ? (
+                <span className="btn-loading-state">
+                  <span className="spinner"></span> Checking Eligibility...
+                </span>
+              ) : (
+                t.submitBtn
+              )}
+            </button>
+            <button
+              type="button"
+              className="reset-btn"
+              onClick={handleReset}
+              disabled={isLoading}
+            >
+              {t.resetBtn}
+            </button>
+          </div>
         </form>
 
         {apiError && (
